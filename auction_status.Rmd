@@ -46,6 +46,8 @@ guru <- get_guru(2017) %>% proj_prep()
 
 pecota <- get_pecota(file.path('..', 'projprep', 'paid_projections', 'pecota_2017.xls')) %>% proj_prep()
 
+fp <- get_fantasy_pros(2017) %>% proj_prep()
+
 ```
 
 ## customize positions
@@ -55,8 +57,9 @@ manual position adjustments here
 ```{r}
 
 #set the active projection system
-#active_pp <- steamer
-active_pp <- pecota
+active_pp <- steamer
+#active_pp <- pecota
+#active_pp <- fp
 
 #MANUAL POSITION ELIGIBILITY ADJUSTMENTS!
 manual_adjuster <- function(df, this_mlbid, position) {
