@@ -55,7 +55,8 @@ manual position adjustments here
 ```{r}
 
 #set the active projection system
-active_pp <- steamer
+#active_pp <- steamer
+active_pp <- pecota
 
 #MANUAL POSITION ELIGIBILITY ADJUSTMENTS!
 manual_adjuster <- function(df, this_mlbid, position) {
@@ -432,11 +433,13 @@ for (i in knitr_out_p) {
 ```{r}
 
 active_h_scored <- active_h %>%
-  dplyr::group_by(owner) %>%
+  dplyr::group_by(owner, projection_name) %>%
+  dplyr::rename(system = projection_name) %>%
   h_sum_pipe()
 
 active_p_scored <- active_p %>%
-  dplyr::group_by(owner) %>%
+  dplyr::group_by(owner, projection_name) %>%
+  dplyr::rename(system = projection_name) %>%
   p_sum_pipe()
 
 h_standings <- active_h_scored %>%
@@ -453,6 +456,8 @@ h_standings <- active_h_scored %>%
     total_h = sum(r, rbi, sb, tb, obp)
   ) %>%
   dplyr::arrange(-total_h)
+
+options(width = 100)
 
 print(active_h_scored, digits = 3)
 
