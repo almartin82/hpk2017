@@ -440,6 +440,3923 @@ head(best_teams) %&gt;% print.AsIs()</code></pre>
 ## 5 1  0  0  0   0   0   0  0    0            C
 ## 6 0  2  3  0   0   0   0  0    4         &lt;NA&gt;</code></pre>
 </div>
+<div id="pitchers" class="section level3">
+<h3>pitchers</h3>
+<p>loop over each team and determine eligibility</p>
+<pre class="r"><code>unq_owners &lt;- auction_p$owner %&gt;% unique()
+
+elig_list_p &lt;- list()
+
+for (i in unq_owners) {
+  print(i)
+  this_team &lt;- auction_p %&gt;% dplyr::filter(owner == i)
+  
+  #loop over h_pos
+  for (j in roster_p_pos) {
+    clean_j &lt;- gsub(&quot;\\d*$&quot;, &quot;&quot;, j)
+    print(clean_j)
+    
+    position_list &lt;- lapply(this_team$position, function(x) strsplit(x, split = ', '))
+    this_team[, j] &lt;- lapply(position_list, function(x) grepl(clean_j, x)) %&gt;% unlist()
+    
+    this_team[, 'P1'] &lt;- TRUE
+    this_team[, 'P2'] &lt;- TRUE
+    this_team[, 'P3'] &lt;- TRUE
+    
+  }
+  
+  elig_list_p[[i]] &lt;- this_team
+}</code></pre>
+<pre><code>## [1] &quot;ALM&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;Moacir&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;Czap&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;Omar&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;Saud&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;Carter&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;Mintz&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;Bench&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;Whet&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;Eric&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;PTB&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;MCard&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;RP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;SP&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;
+## [1] &quot;P&quot;</code></pre>
+<pre class="r"><code>elig_teams_p &lt;- dplyr::bind_rows(elig_list_p)
+
+head(elig_teams_p) %&gt;% print.AsIs()</code></pre>
+<pre><code>##    mlbid              name price owner pos projection_name value position
+## 1 407793       John Lackey     9   ALM   p         steamer   8.9       SP
+## 2 434538 Francisco Liriano     1   ALM   p         steamer  -7.1       SP
+## 3 453343     Mark Melancon    19   ALM   p         steamer  18.5       RP
+## 4 453562      Jake Arrieta    28   ALM   p         steamer   7.9       SP
+## 5 462136     Marco Estrada     1   ALM   p         steamer -15.1       SP
+## 6 493200     Seung Hwan Oh    19   ALM   p         steamer  16.1       RP
+##     RP1   RP2   RP3   SP1   SP2   SP3   P1   P2   P3
+## 1 FALSE FALSE FALSE  TRUE  TRUE  TRUE TRUE TRUE TRUE
+## 2 FALSE FALSE FALSE  TRUE  TRUE  TRUE TRUE TRUE TRUE
+## 3  TRUE  TRUE  TRUE FALSE FALSE FALSE TRUE TRUE TRUE
+## 4 FALSE FALSE FALSE  TRUE  TRUE  TRUE TRUE TRUE TRUE
+## 5 FALSE FALSE FALSE  TRUE  TRUE  TRUE TRUE TRUE TRUE
+## 6  TRUE  TRUE  TRUE FALSE FALSE FALSE TRUE TRUE TRUE</code></pre>
+<p>loop over each team and given eligibility, pick the best eligible guy</p>
+<pre class="r"><code>best_list_p &lt;- list()
+
+for (i in unq_owners) {
+  print(i)
+  this_team &lt;- elig_teams_p %&gt;% dplyr::filter(owner == i)
+  this_team$starting_pos &lt;- NA
+  
+  #loop over h_pos
+  for (j in roster_p_pos) {
+
+    #build a logical vector of: is this player eligible at this position, AND are they
+    #still unassigned as a starter
+    this_team$mask &lt;- unlist(this_team[, j]) &amp; is.na(this_team$starting_pos)
+    
+    #rank inside that subset and record
+    position_ranked &lt;- rank(-this_team[this_team$mask, ]$value, ties.method = 'first')
+    #I THINK I CAUGHT A DPLYR BUG!
+    this_team[, j] = 0
+    this_team[this_team$mask, j] = position_ranked
+    
+    #pick the #1 guy and mark his starting position
+    this_team[this_team[, j] == 1, 'starting_pos'] = j
+    
+    this_team &lt;- this_team %&gt;% dplyr::select(-mask)
+  }
+    
+  best_list_p[[i]] &lt;- this_team
+}</code></pre>
+<pre><code>## [1] &quot;ALM&quot;
+## [1] &quot;Moacir&quot;
+## [1] &quot;Czap&quot;
+## [1] &quot;Omar&quot;
+## [1] &quot;Saud&quot;
+## [1] &quot;Carter&quot;
+## [1] &quot;Mintz&quot;
+## [1] &quot;Bench&quot;
+## [1] &quot;Whet&quot;
+## [1] &quot;Eric&quot;
+## [1] &quot;PTB&quot;
+## [1] &quot;MCard&quot;</code></pre>
+<pre class="r"><code>best_teams_p &lt;- dplyr::bind_rows(best_list_p)
+
+head(best_teams_p) %&gt;% print.AsIs()</code></pre>
+<pre><code>##    mlbid              name price owner pos projection_name value position
+## 1 407793       John Lackey     9   ALM   p         steamer   8.9       SP
+## 2 434538 Francisco Liriano     1   ALM   p         steamer  -7.1       SP
+## 3 453343     Mark Melancon    19   ALM   p         steamer  18.5       RP
+## 4 453562      Jake Arrieta    28   ALM   p         steamer   7.9       SP
+## 5 462136     Marco Estrada     1   ALM   p         steamer -15.1       SP
+## 6 493200     Seung Hwan Oh    19   ALM   p         steamer  16.1       RP
+##   RP1 RP2 RP3 SP1 SP2 SP3 P1 P2 P3 starting_pos
+## 1   0   0   0   2   1   0  0  0  0          SP2
+## 2   0   0   0   5   4   3  2  1  0           P2
+## 3   2   1   0   0   0   0  0  0  0          RP2
+## 4   0   0   0   3   2   1  0  0  0          SP3
+## 5   0   0   0   7   6   5  4  3  2         &lt;NA&gt;
+## 6   3   2   1   0   0   0  0  0  0          RP3</code></pre>
+</div>
+</div>
+<div id="now-score" class="section level2">
+<h2>Now score</h2>
+<pre class="r"><code>active_h &lt;- best_teams %&gt;%
+  dplyr::filter(!is.na(starting_pos)) %&gt;%
+  dplyr::left_join(
+    active_pp$h_final %&gt;% dplyr::select(
+      mlbid, ab, r, rbi, sb, tb, obp
+    )
+  ) %&gt;%
+  dplyr::mutate(
+    pos = parse_factor(
+      starting_pos, 
+      c('C', '1B', '2B', 'SS', '3B', 'OF1', 'OF2', 'OF3', 'Util')
+    )    
+  )</code></pre>
+<pre><code>## Joining, by = &quot;mlbid&quot;</code></pre>
+<pre class="r"><code>active_p &lt;- best_teams_p %&gt;%
+  dplyr::filter(!is.na(starting_pos)) %&gt;%
+  dplyr::left_join(
+    active_pp$p_final %&gt;% dplyr::select(
+      mlbid, ip, w, sv, k, era, whip
+    )
+  ) %&gt;%
+  dplyr::mutate(
+    pos = parse_factor(
+      starting_pos, 
+      c('SP1', 'SP2', 'SP3', 'RP1', 'RP2', 'RP3', 'P1', 'P2', 'P3')
+    )    
+  )</code></pre>
+<pre><code>## Joining, by = &quot;mlbid&quot;</code></pre>
+<p>print each team - hitters</p>
+<pre class="r"><code>h_sum_pipe &lt;- . %&gt;%
+  dplyr::mutate(tob = ab * obp) %&gt;%
+  dplyr::summarize(
+    ab = sum(ab),
+    r = sum(r),
+    rbi = sum(rbi),
+    sb = sum(sb),
+    tb = sum(tb),
+    obp = sum(tob) / sum(ab)
+  ) 
+
+knitr_out &lt;- list()
+
+for (i in unq_owners) {
+  
+  this_owner &lt;- active_h %&gt;%
+    dplyr::filter(owner == i)
+  
+  team_format &lt;- this_owner %&gt;%
+    dplyr::select(owner, name, pos, projection_name, ab, r, rbi, sb, tb, obp) %&gt;%
+    dplyr::rename(
+      player = name,
+      system = projection_name
+    ) %&gt;%
+    dplyr::arrange(pos)
+  
+  team_format_sum &lt;- team_format %&gt;%
+    dplyr::mutate(player = 'total', pos = '') %&gt;%
+    dplyr::group_by(owner, player, pos, system) %&gt;%
+    h_sum_pipe() %&gt;%
+    dplyr::ungroup()
+  
+  team_format$pos &lt;- as.character(team_format$pos)
+  final &lt;- rbind(team_format, team_format_sum)
+  
+  knitr_out[[i]] &lt;- knitr::kable(final, digits = 3, format = 'markdown')
+  
+  print.AsIs(final, digits = 3)
+  cat('\n')
+}</code></pre>
+<pre><code>##    owner           player  pos  system   ab   r rbi sb   tb   obp
+## 1    ALM   Salvador Perez    C steamer  457  54  64  1  202 0.298
+## 2    ALM      Chris Davis   1B steamer  524  82  93  2  248 0.334
+## 3    ALM       Dee Gordon   2B steamer  576  73  43 46  206 0.321
+## 4    ALM Francisco Lindor   SS steamer  580  80  75 16  249 0.349
+## 5    ALM   Mike Moustakas   3B steamer  507  73  74  3  239 0.329
+## 6    ALM       Adam Eaton  OF1 steamer  579  85  57 14  238 0.355
+## 7    ALM     Kole Calhoun  OF2 steamer  568  80  75  4  244 0.329
+## 8    ALM Stephen Piscotty  OF3 steamer  552  70  75  7  237 0.333
+## 9    ALM  Adrian Gonzalez Util steamer  513  66  75  1  222 0.332
+## 10   ALM            total      steamer 4856 663 631 94 2085 0.332
+## 
+##     owner           player  pos  system   ab   r rbi sb   tb   obp
+## 1  Moacir  Jonathan Lucroy    C steamer  457  62  64  3  202 0.348
+## 2  Moacir    Albert Pujols   1B steamer  498  69  84  3  236 0.326
+## 3  Moacir      Ben Zobrist   2B steamer  460  69  58  5  195 0.365
+## 4  Moacir      Jean Segura   SS steamer  586  76  61 24  231 0.316
+## 5  Moacir    Maikel Franco   3B steamer  547  72  83  2  259 0.324
+## 6  Moacir  Kevin Kiermaier  OF1 steamer  540  72  61 20  225 0.321
+## 7  Moacir    Jose Bautista  OF2 steamer  447  76  79  3  216 0.369
+## 8  Moacir    Shin-Soo Choo  OF3 steamer  454  72  59  8  193 0.362
+## 9  Moacir Michael Brantley Util steamer  372  51  52  7  164 0.359
+## 10 Moacir            total      steamer 4361 619 601 75 1921 0.341
+## 
+##    owner            player  pos  system   ab   r rbi  sb   tb   obp
+## 1   Czap     Yadier Molina    C steamer  449  49  55   3  180 0.333
+## 2   Czap      Chris Carter   1B steamer  350  52  58   2  162 0.318
+## 3   Czap      Brian Dozier   2B steamer  567  85  80  13  254 0.330
+## 4   Czap   Xander Bogaerts   SS steamer  569  81  78   9  256 0.354
+## 5   Czap    Josh Donaldson   3B steamer  537  94  93   4  277 0.374
+## 6   Czap      Mookie Betts  OF1 steamer  581  95  94  21  301 0.366
+## 7   Czap       Ian Desmond  OF2 steamer  516  72  75  14  239 0.337
+## 8   Czap      A.J. Pollock  OF3 steamer  518  74  59  22  229 0.341
+## 9   Czap Andrew Benintendi Util steamer  477  66  60  13  209 0.338
+## 10  Czap             total      steamer 4564 668 652 101 2107 0.345
+## 
+##    owner           player  pos  system   ab   r rbi sb   tb   obp
+## 1   Omar     Buster Posey    C steamer  482  66  71  3  225 0.370
+## 2   Omar Paul Goldschmidt   1B steamer  521  88  85 18  261 0.401
+## 3   Omar    Daniel Murphy   2B steamer  522  73  75  5  250 0.362
+## 4   Omar  Addison Russell   SS steamer  496  61  68  5  207 0.321
+## 5   Omar     Todd Frazier   3B steamer  550  73  84 11  246 0.311
+## 6   Omar      Nelson Cruz  OF1 steamer  537  79  96  2  267 0.335
+## 7   Omar       Adam Jones  OF2 steamer  585  82  84  3  271 0.312
+## 8   Omar    Melky Cabrera  OF3 steamer  551  69  69  2  239 0.340
+## 9   Omar Brandon Crawford Util steamer  515  59  63  5  208 0.326
+## 10  Omar            total      steamer 4759 650 695 54 2174 0.341
+## 
+##    owner           player  pos  system   ab   r rbi sb   tb   obp
+## 1   Saud   Kyle Schwarber    C steamer  466  77  73  6  229 0.353
+## 2   Saud       Joey Votto   1B steamer  509  86  77  6  249 0.418
+## 3   Saud   Logan Forsythe   2B steamer  522  73  60  8  215 0.328
+## 4   Saud   Dansby Swanson   SS steamer  534  66  57  9  212 0.322
+## 5   Saud   Pablo Sandoval   3B steamer  382  48  52  2  164 0.325
+## 6   Saud Charlie Blackmon  OF1 steamer  583  92  68 23  269 0.346
+## 7   Saud      Khris Davis  OF2 steamer  538  75  90  3  256 0.312
+## 8   Saud      Mark Trumbo  OF3 steamer  503  73  87  2  247 0.318
+## 9   Saud      Ian Kinsler Util steamer  581  80  69 10  245 0.321
+## 10  Saud            total      steamer 4618 670 633 69 2086 0.338
+## 
+##     owner         player  pos  system   ab   r rbi  sb   tb   obp
+## 1  Carter   Gary Sanchez    C steamer  471  68  80   6  233 0.329
+## 2  Carter     Jose Abreu   1B steamer  556  77  89   1  269 0.344
+## 3  Carter    Trea Turner   2B steamer  582  89  67  40  266 0.347
+## 4  Carter   Trevor Story   SS steamer  488  69  76  13  233 0.328
+## 5  Carter    Kris Bryant   3B steamer  549  93  93   9  283 0.368
+## 6  Carter Starling Marte  OF1 steamer  514  70  67  32  229 0.342
+## 7  Carter     Ryan Braun  OF2 steamer  492  71  77  12  241 0.346
+## 8  Carter      Jay Bruce  OF3 steamer  439  55  65   5  195 0.302
+## 9  Carter   Rougned Odor Util steamer  565  78  89  13  273 0.314
+## 10 Carter          total      steamer 4656 670 703 131 2222 0.336
+## 
+##    owner           player  pos  system   ab   r rbi sb   tb   obp
+## 1  Mintz    J.T. Realmuto    C steamer  418  44  50  8  172 0.317
+## 2  Mintz      Eric Hosmer   1B steamer  561  75  83  5  256 0.345
+## 3  Mintz      DJ LeMahieu   2B steamer  562  82  58 13  240 0.368
+## 4  Mintz     Tim Anderson   SS steamer  596  69  58 21  230 0.298
+## 5  Mintz    Evan Longoria   3B steamer  566  75  85  2  261 0.325
+## 6  Mintz Andrew McCutchen  OF1 steamer  535  82  80  8  253 0.378
+## 7  Mintz Christian Yelich  OF2 steamer  549  81  72 12  249 0.373
+## 8  Mintz     Justin Upton  OF3 steamer  530  78  85 10  250 0.338
+## 9  Mintz    J.D. Martinez Util steamer  507  75  81  3  247 0.337
+## 10 Mintz            total      steamer 4824 661 652 82 2158 0.342
+## 
+##   owner          player  pos  system   ab   r rbi sb   tb   obp
+## 1 Bench    Brandon Belt   1B steamer  507  71  69  4  223 0.358
+## 2 Bench Jonathan Schoop   2B steamer  522  65  74  3  234 0.296
+## 3 Bench   Carlos Correa   SS steamer  553  83  86 14  259 0.358
+## 4 Bench   Manny Machado   3B steamer  576  93 100  7  304 0.354
+## 5 Bench George Springer  OF1 steamer  535  90  76 13  246 0.356
+## 6 Bench Gregory Polanco  OF2 steamer  537  74  70 19  233 0.333
+## 7 Bench       Matt Kemp  OF3 steamer  541  67  83  3  247 0.320
+## 8 Bench  Matt Carpenter Util steamer  545  86  69  4  243 0.370
+## 9 Bench           total      steamer 4316 629 627 67 1989 0.343
+## 
+##    owner           player  pos  system   ab   r rbi  sb   tb   obp
+## 1   Whet  Yasmani Grandal    C steamer  386  55  59   2  170 0.346
+## 2   Whet    Anthony Rizzo   1B steamer  534  91  98   7  278 0.381
+## 3   Whet    Robinson Cano   2B steamer  577  79  89   3  274 0.344
+## 4   Whet    Marcus Semien   SS steamer  523  66  69   9  222 0.315
+## 5   Whet      Kyle Seager   3B steamer  535  76  82   4  248 0.344
+## 6   Whet   Billy Hamilton  OF1 steamer  521  66  41  56  178 0.303
+## 7   Whet     Carlos Gomez  OF2 steamer  487  68  58  19  202 0.318
+## 8   Whet Travis Jankowski  OF3 steamer  520  58  41  34  174 0.319
+## 9   Whet        Wil Myers Util steamer  532  72  75  18  239 0.334
+## 10  Whet            total      steamer 4615 631 612 152 1985 0.334
+## 
+##    owner             player  pos  system   ab   r rbi sb   tb   obp
+## 1   Eric Francisco Cervelli    C steamer  343  37  37  4  123 0.356
+## 2   Eric    Freddie Freeman   1B steamer  541  84  87  4  265 0.378
+## 3   Eric       Jose Ramirez   2B steamer  513  66  63 19  216 0.344
+## 4   Eric       Corey Seager   SS steamer  585  86  79  4  278 0.342
+## 5   Eric      Justin Turner   3B steamer  513  71  74  4  233 0.345
+## 6   Eric         Mike Trout  OF1 steamer  526 102 100 19  298 0.419
+## 7   Eric       Bryce Harper  OF2 steamer  489  91  91 15  261 0.413
+## 8   Eric       Nomar Mazara  OF3 steamer  491  64  68  2  213 0.332
+## 9   Eric    Cesar Hernandez Util steamer  554  69  46 17  201 0.342
+## 10  Eric              total      steamer 4555 670 645 88 2088 0.363
+## 
+##    owner            player  pos  system   ab   r rbi sb   tb   obp
+## 1    PTB      Stephen Vogt    C steamer  454  57  57  1  188 0.322
+## 2    PTB    Carlos Santana   1B steamer  536  93  79  6  246 0.372
+## 3    PTB       Jose Altuve   2B steamer  595  92  76 28  279 0.365
+## 4    PTB      Aledmys Diaz   SS steamer  500  71  64  7  226 0.342
+## 5    PTB     Nolan Arenado   3B steamer  577  91 104  4  310 0.348
+## 6    PTB    Odubel Herrera  OF1 steamer  572  74  58 19  226 0.339
+## 7    PTB   Yoenis Cespedes  OF2 steamer  532  72  84  4  256 0.322
+## 8    PTB        Max Kepler  OF3 steamer  485  63  66  8  211 0.333
+## 9    PTB Edwin Encarnacion Util steamer  493  78  89  2  239 0.349
+## 10   PTB             total      steamer 4744 691 677 79 2181 0.344
+## 
+##    owner             player  pos  system   ab   r rbi sb   tb   obp
+## 1  MCard Welington Castillo    C steamer  340  42  45  2  139 0.311
+## 2  MCard     Miguel Cabrera   1B steamer  538  92  97  1  290 0.393
+## 3  MCard     Dustin Pedroia   2B steamer  545  81  62  6  227 0.354
+## 4  MCard    Jonathan Villar   SS steamer  564  83  55 49  224 0.333
+## 5  MCard         Ryon Healy   3B steamer  528  62  70  2  230 0.312
+## 6  MCard    Carlos Gonzalez  OF1 steamer  531  78  92  3  271 0.344
+## 7  MCard  Giancarlo Stanton  OF2 steamer  441  74  88  3  245 0.363
+## 8  MCard      Dexter Fowler  OF3 steamer  513  80  50 14  202 0.360
+## 9  MCard       Jason Kipnis Util steamer  525  76  64 12  219 0.341
+## 10 MCard              total      steamer 4525 668 623 92 2047 0.347</code></pre>
+<pre class="r"><code>for (i in knitr_out) {
+  print(i)
+}</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ab</th>
+<th align="right">r</th>
+<th align="right">rbi</th>
+<th align="right">sb</th>
+<th align="right">tb</th>
+<th align="right">obp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ALM</td>
+<td align="left">Salvador Perez</td>
+<td align="left">C</td>
+<td align="left">steamer</td>
+<td align="right">457</td>
+<td align="right">54</td>
+<td align="right">64</td>
+<td align="right">1</td>
+<td align="right">202</td>
+<td align="right">0.298</td>
+</tr>
+<tr class="even">
+<td align="left">ALM</td>
+<td align="left">Chris Davis</td>
+<td align="left">1B</td>
+<td align="left">steamer</td>
+<td align="right">524</td>
+<td align="right">82</td>
+<td align="right">93</td>
+<td align="right">2</td>
+<td align="right">248</td>
+<td align="right">0.334</td>
+</tr>
+<tr class="odd">
+<td align="left">ALM</td>
+<td align="left">Dee Gordon</td>
+<td align="left">2B</td>
+<td align="left">steamer</td>
+<td align="right">576</td>
+<td align="right">73</td>
+<td align="right">43</td>
+<td align="right">46</td>
+<td align="right">206</td>
+<td align="right">0.321</td>
+</tr>
+<tr class="even">
+<td align="left">ALM</td>
+<td align="left">Francisco Lindor</td>
+<td align="left">SS</td>
+<td align="left">steamer</td>
+<td align="right">580</td>
+<td align="right">80</td>
+<td align="right">75</td>
+<td align="right">16</td>
+<td align="right">249</td>
+<td align="right">0.349</td>
+</tr>
+<tr class="odd">
+<td align="left">ALM</td>
+<td align="left">Mike Moustakas</td>
+<td align="left">3B</td>
+<td align="left">steamer</td>
+<td align="right">507</td>
+<td align="right">73</td>
+<td align="right">74</td>
+<td align="right">3</td>
+<td align="right">239</td>
+<td align="right">0.329</td>
+</tr>
+<tr class="even">
+<td align="left">ALM</td>
+<td align="left">Adam Eaton</td>
+<td align="left">OF1</td>
+<td align="left">steamer</td>
+<td align="right">579</td>
+<td align="right">85</td>
+<td align="right">57</td>
+<td align="right">14</td>
+<td align="right">238</td>
+<td align="right">0.355</td>
+</tr>
+<tr class="odd">
+<td align="left">ALM</td>
+<td align="left">Kole Calhoun</td>
+<td align="left">OF2</td>
+<td align="left">steamer</td>
+<td align="right">568</td>
+<td align="right">80</td>
+<td align="right">75</td>
+<td align="right">4</td>
+<td align="right">244</td>
+<td align="right">0.329</td>
+</tr>
+<tr class="even">
+<td align="left">ALM</td>
+<td align="left">Stephen Piscotty</td>
+<td align="left">OF3</td>
+<td align="left">steamer</td>
+<td align="right">552</td>
+<td align="right">70</td>
+<td align="right">75</td>
+<td align="right">7</td>
+<td align="right">237</td>
+<td align="right">0.333</td>
+</tr>
+<tr class="odd">
+<td align="left">ALM</td>
+<td align="left">Adrian Gonzalez</td>
+<td align="left">Util</td>
+<td align="left">steamer</td>
+<td align="right">513</td>
+<td align="right">66</td>
+<td align="right">75</td>
+<td align="right">1</td>
+<td align="right">222</td>
+<td align="right">0.332</td>
+</tr>
+<tr class="even">
+<td align="left">ALM</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">4856</td>
+<td align="right">663</td>
+<td align="right">631</td>
+<td align="right">94</td>
+<td align="right">2085</td>
+<td align="right">0.332</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ab</th>
+<th align="right">r</th>
+<th align="right">rbi</th>
+<th align="right">sb</th>
+<th align="right">tb</th>
+<th align="right">obp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Moacir</td>
+<td align="left">Jonathan Lucroy</td>
+<td align="left">C</td>
+<td align="left">steamer</td>
+<td align="right">457</td>
+<td align="right">62</td>
+<td align="right">64</td>
+<td align="right">3</td>
+<td align="right">202</td>
+<td align="right">0.348</td>
+</tr>
+<tr class="even">
+<td align="left">Moacir</td>
+<td align="left">Albert Pujols</td>
+<td align="left">1B</td>
+<td align="left">steamer</td>
+<td align="right">498</td>
+<td align="right">69</td>
+<td align="right">84</td>
+<td align="right">3</td>
+<td align="right">236</td>
+<td align="right">0.326</td>
+</tr>
+<tr class="odd">
+<td align="left">Moacir</td>
+<td align="left">Ben Zobrist</td>
+<td align="left">2B</td>
+<td align="left">steamer</td>
+<td align="right">460</td>
+<td align="right">69</td>
+<td align="right">58</td>
+<td align="right">5</td>
+<td align="right">195</td>
+<td align="right">0.365</td>
+</tr>
+<tr class="even">
+<td align="left">Moacir</td>
+<td align="left">Jean Segura</td>
+<td align="left">SS</td>
+<td align="left">steamer</td>
+<td align="right">586</td>
+<td align="right">76</td>
+<td align="right">61</td>
+<td align="right">24</td>
+<td align="right">231</td>
+<td align="right">0.316</td>
+</tr>
+<tr class="odd">
+<td align="left">Moacir</td>
+<td align="left">Maikel Franco</td>
+<td align="left">3B</td>
+<td align="left">steamer</td>
+<td align="right">547</td>
+<td align="right">72</td>
+<td align="right">83</td>
+<td align="right">2</td>
+<td align="right">259</td>
+<td align="right">0.324</td>
+</tr>
+<tr class="even">
+<td align="left">Moacir</td>
+<td align="left">Kevin Kiermaier</td>
+<td align="left">OF1</td>
+<td align="left">steamer</td>
+<td align="right">540</td>
+<td align="right">72</td>
+<td align="right">61</td>
+<td align="right">20</td>
+<td align="right">225</td>
+<td align="right">0.321</td>
+</tr>
+<tr class="odd">
+<td align="left">Moacir</td>
+<td align="left">Jose Bautista</td>
+<td align="left">OF2</td>
+<td align="left">steamer</td>
+<td align="right">447</td>
+<td align="right">76</td>
+<td align="right">79</td>
+<td align="right">3</td>
+<td align="right">216</td>
+<td align="right">0.369</td>
+</tr>
+<tr class="even">
+<td align="left">Moacir</td>
+<td align="left">Shin-Soo Choo</td>
+<td align="left">OF3</td>
+<td align="left">steamer</td>
+<td align="right">454</td>
+<td align="right">72</td>
+<td align="right">59</td>
+<td align="right">8</td>
+<td align="right">193</td>
+<td align="right">0.362</td>
+</tr>
+<tr class="odd">
+<td align="left">Moacir</td>
+<td align="left">Michael Brantley</td>
+<td align="left">Util</td>
+<td align="left">steamer</td>
+<td align="right">372</td>
+<td align="right">51</td>
+<td align="right">52</td>
+<td align="right">7</td>
+<td align="right">164</td>
+<td align="right">0.359</td>
+</tr>
+<tr class="even">
+<td align="left">Moacir</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">4361</td>
+<td align="right">619</td>
+<td align="right">601</td>
+<td align="right">75</td>
+<td align="right">1921</td>
+<td align="right">0.341</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ab</th>
+<th align="right">r</th>
+<th align="right">rbi</th>
+<th align="right">sb</th>
+<th align="right">tb</th>
+<th align="right">obp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Czap</td>
+<td align="left">Yadier Molina</td>
+<td align="left">C</td>
+<td align="left">steamer</td>
+<td align="right">449</td>
+<td align="right">49</td>
+<td align="right">55</td>
+<td align="right">3</td>
+<td align="right">180</td>
+<td align="right">0.333</td>
+</tr>
+<tr class="even">
+<td align="left">Czap</td>
+<td align="left">Chris Carter</td>
+<td align="left">1B</td>
+<td align="left">steamer</td>
+<td align="right">350</td>
+<td align="right">52</td>
+<td align="right">58</td>
+<td align="right">2</td>
+<td align="right">162</td>
+<td align="right">0.318</td>
+</tr>
+<tr class="odd">
+<td align="left">Czap</td>
+<td align="left">Brian Dozier</td>
+<td align="left">2B</td>
+<td align="left">steamer</td>
+<td align="right">567</td>
+<td align="right">85</td>
+<td align="right">80</td>
+<td align="right">13</td>
+<td align="right">254</td>
+<td align="right">0.330</td>
+</tr>
+<tr class="even">
+<td align="left">Czap</td>
+<td align="left">Xander Bogaerts</td>
+<td align="left">SS</td>
+<td align="left">steamer</td>
+<td align="right">569</td>
+<td align="right">81</td>
+<td align="right">78</td>
+<td align="right">9</td>
+<td align="right">256</td>
+<td align="right">0.354</td>
+</tr>
+<tr class="odd">
+<td align="left">Czap</td>
+<td align="left">Josh Donaldson</td>
+<td align="left">3B</td>
+<td align="left">steamer</td>
+<td align="right">537</td>
+<td align="right">94</td>
+<td align="right">93</td>
+<td align="right">4</td>
+<td align="right">277</td>
+<td align="right">0.374</td>
+</tr>
+<tr class="even">
+<td align="left">Czap</td>
+<td align="left">Mookie Betts</td>
+<td align="left">OF1</td>
+<td align="left">steamer</td>
+<td align="right">581</td>
+<td align="right">95</td>
+<td align="right">94</td>
+<td align="right">21</td>
+<td align="right">301</td>
+<td align="right">0.366</td>
+</tr>
+<tr class="odd">
+<td align="left">Czap</td>
+<td align="left">Ian Desmond</td>
+<td align="left">OF2</td>
+<td align="left">steamer</td>
+<td align="right">516</td>
+<td align="right">72</td>
+<td align="right">75</td>
+<td align="right">14</td>
+<td align="right">239</td>
+<td align="right">0.337</td>
+</tr>
+<tr class="even">
+<td align="left">Czap</td>
+<td align="left">A.J. Pollock</td>
+<td align="left">OF3</td>
+<td align="left">steamer</td>
+<td align="right">518</td>
+<td align="right">74</td>
+<td align="right">59</td>
+<td align="right">22</td>
+<td align="right">229</td>
+<td align="right">0.341</td>
+</tr>
+<tr class="odd">
+<td align="left">Czap</td>
+<td align="left">Andrew Benintendi</td>
+<td align="left">Util</td>
+<td align="left">steamer</td>
+<td align="right">477</td>
+<td align="right">66</td>
+<td align="right">60</td>
+<td align="right">13</td>
+<td align="right">209</td>
+<td align="right">0.338</td>
+</tr>
+<tr class="even">
+<td align="left">Czap</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">4564</td>
+<td align="right">668</td>
+<td align="right">652</td>
+<td align="right">101</td>
+<td align="right">2107</td>
+<td align="right">0.345</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ab</th>
+<th align="right">r</th>
+<th align="right">rbi</th>
+<th align="right">sb</th>
+<th align="right">tb</th>
+<th align="right">obp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Omar</td>
+<td align="left">Buster Posey</td>
+<td align="left">C</td>
+<td align="left">steamer</td>
+<td align="right">482</td>
+<td align="right">66</td>
+<td align="right">71</td>
+<td align="right">3</td>
+<td align="right">225</td>
+<td align="right">0.370</td>
+</tr>
+<tr class="even">
+<td align="left">Omar</td>
+<td align="left">Paul Goldschmidt</td>
+<td align="left">1B</td>
+<td align="left">steamer</td>
+<td align="right">521</td>
+<td align="right">88</td>
+<td align="right">85</td>
+<td align="right">18</td>
+<td align="right">261</td>
+<td align="right">0.401</td>
+</tr>
+<tr class="odd">
+<td align="left">Omar</td>
+<td align="left">Daniel Murphy</td>
+<td align="left">2B</td>
+<td align="left">steamer</td>
+<td align="right">522</td>
+<td align="right">73</td>
+<td align="right">75</td>
+<td align="right">5</td>
+<td align="right">250</td>
+<td align="right">0.362</td>
+</tr>
+<tr class="even">
+<td align="left">Omar</td>
+<td align="left">Addison Russell</td>
+<td align="left">SS</td>
+<td align="left">steamer</td>
+<td align="right">496</td>
+<td align="right">61</td>
+<td align="right">68</td>
+<td align="right">5</td>
+<td align="right">207</td>
+<td align="right">0.321</td>
+</tr>
+<tr class="odd">
+<td align="left">Omar</td>
+<td align="left">Todd Frazier</td>
+<td align="left">3B</td>
+<td align="left">steamer</td>
+<td align="right">550</td>
+<td align="right">73</td>
+<td align="right">84</td>
+<td align="right">11</td>
+<td align="right">246</td>
+<td align="right">0.311</td>
+</tr>
+<tr class="even">
+<td align="left">Omar</td>
+<td align="left">Nelson Cruz</td>
+<td align="left">OF1</td>
+<td align="left">steamer</td>
+<td align="right">537</td>
+<td align="right">79</td>
+<td align="right">96</td>
+<td align="right">2</td>
+<td align="right">267</td>
+<td align="right">0.335</td>
+</tr>
+<tr class="odd">
+<td align="left">Omar</td>
+<td align="left">Adam Jones</td>
+<td align="left">OF2</td>
+<td align="left">steamer</td>
+<td align="right">585</td>
+<td align="right">82</td>
+<td align="right">84</td>
+<td align="right">3</td>
+<td align="right">271</td>
+<td align="right">0.312</td>
+</tr>
+<tr class="even">
+<td align="left">Omar</td>
+<td align="left">Melky Cabrera</td>
+<td align="left">OF3</td>
+<td align="left">steamer</td>
+<td align="right">551</td>
+<td align="right">69</td>
+<td align="right">69</td>
+<td align="right">2</td>
+<td align="right">239</td>
+<td align="right">0.340</td>
+</tr>
+<tr class="odd">
+<td align="left">Omar</td>
+<td align="left">Brandon Crawford</td>
+<td align="left">Util</td>
+<td align="left">steamer</td>
+<td align="right">515</td>
+<td align="right">59</td>
+<td align="right">63</td>
+<td align="right">5</td>
+<td align="right">208</td>
+<td align="right">0.326</td>
+</tr>
+<tr class="even">
+<td align="left">Omar</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">4759</td>
+<td align="right">650</td>
+<td align="right">695</td>
+<td align="right">54</td>
+<td align="right">2174</td>
+<td align="right">0.341</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ab</th>
+<th align="right">r</th>
+<th align="right">rbi</th>
+<th align="right">sb</th>
+<th align="right">tb</th>
+<th align="right">obp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Saud</td>
+<td align="left">Kyle Schwarber</td>
+<td align="left">C</td>
+<td align="left">steamer</td>
+<td align="right">466</td>
+<td align="right">77</td>
+<td align="right">73</td>
+<td align="right">6</td>
+<td align="right">229</td>
+<td align="right">0.353</td>
+</tr>
+<tr class="even">
+<td align="left">Saud</td>
+<td align="left">Joey Votto</td>
+<td align="left">1B</td>
+<td align="left">steamer</td>
+<td align="right">509</td>
+<td align="right">86</td>
+<td align="right">77</td>
+<td align="right">6</td>
+<td align="right">249</td>
+<td align="right">0.418</td>
+</tr>
+<tr class="odd">
+<td align="left">Saud</td>
+<td align="left">Logan Forsythe</td>
+<td align="left">2B</td>
+<td align="left">steamer</td>
+<td align="right">522</td>
+<td align="right">73</td>
+<td align="right">60</td>
+<td align="right">8</td>
+<td align="right">215</td>
+<td align="right">0.328</td>
+</tr>
+<tr class="even">
+<td align="left">Saud</td>
+<td align="left">Dansby Swanson</td>
+<td align="left">SS</td>
+<td align="left">steamer</td>
+<td align="right">534</td>
+<td align="right">66</td>
+<td align="right">57</td>
+<td align="right">9</td>
+<td align="right">212</td>
+<td align="right">0.322</td>
+</tr>
+<tr class="odd">
+<td align="left">Saud</td>
+<td align="left">Pablo Sandoval</td>
+<td align="left">3B</td>
+<td align="left">steamer</td>
+<td align="right">382</td>
+<td align="right">48</td>
+<td align="right">52</td>
+<td align="right">2</td>
+<td align="right">164</td>
+<td align="right">0.325</td>
+</tr>
+<tr class="even">
+<td align="left">Saud</td>
+<td align="left">Charlie Blackmon</td>
+<td align="left">OF1</td>
+<td align="left">steamer</td>
+<td align="right">583</td>
+<td align="right">92</td>
+<td align="right">68</td>
+<td align="right">23</td>
+<td align="right">269</td>
+<td align="right">0.346</td>
+</tr>
+<tr class="odd">
+<td align="left">Saud</td>
+<td align="left">Khris Davis</td>
+<td align="left">OF2</td>
+<td align="left">steamer</td>
+<td align="right">538</td>
+<td align="right">75</td>
+<td align="right">90</td>
+<td align="right">3</td>
+<td align="right">256</td>
+<td align="right">0.312</td>
+</tr>
+<tr class="even">
+<td align="left">Saud</td>
+<td align="left">Mark Trumbo</td>
+<td align="left">OF3</td>
+<td align="left">steamer</td>
+<td align="right">503</td>
+<td align="right">73</td>
+<td align="right">87</td>
+<td align="right">2</td>
+<td align="right">247</td>
+<td align="right">0.318</td>
+</tr>
+<tr class="odd">
+<td align="left">Saud</td>
+<td align="left">Ian Kinsler</td>
+<td align="left">Util</td>
+<td align="left">steamer</td>
+<td align="right">581</td>
+<td align="right">80</td>
+<td align="right">69</td>
+<td align="right">10</td>
+<td align="right">245</td>
+<td align="right">0.321</td>
+</tr>
+<tr class="even">
+<td align="left">Saud</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">4618</td>
+<td align="right">670</td>
+<td align="right">633</td>
+<td align="right">69</td>
+<td align="right">2086</td>
+<td align="right">0.338</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ab</th>
+<th align="right">r</th>
+<th align="right">rbi</th>
+<th align="right">sb</th>
+<th align="right">tb</th>
+<th align="right">obp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Carter</td>
+<td align="left">Gary Sanchez</td>
+<td align="left">C</td>
+<td align="left">steamer</td>
+<td align="right">471</td>
+<td align="right">68</td>
+<td align="right">80</td>
+<td align="right">6</td>
+<td align="right">233</td>
+<td align="right">0.329</td>
+</tr>
+<tr class="even">
+<td align="left">Carter</td>
+<td align="left">Jose Abreu</td>
+<td align="left">1B</td>
+<td align="left">steamer</td>
+<td align="right">556</td>
+<td align="right">77</td>
+<td align="right">89</td>
+<td align="right">1</td>
+<td align="right">269</td>
+<td align="right">0.344</td>
+</tr>
+<tr class="odd">
+<td align="left">Carter</td>
+<td align="left">Trea Turner</td>
+<td align="left">2B</td>
+<td align="left">steamer</td>
+<td align="right">582</td>
+<td align="right">89</td>
+<td align="right">67</td>
+<td align="right">40</td>
+<td align="right">266</td>
+<td align="right">0.347</td>
+</tr>
+<tr class="even">
+<td align="left">Carter</td>
+<td align="left">Trevor Story</td>
+<td align="left">SS</td>
+<td align="left">steamer</td>
+<td align="right">488</td>
+<td align="right">69</td>
+<td align="right">76</td>
+<td align="right">13</td>
+<td align="right">233</td>
+<td align="right">0.328</td>
+</tr>
+<tr class="odd">
+<td align="left">Carter</td>
+<td align="left">Kris Bryant</td>
+<td align="left">3B</td>
+<td align="left">steamer</td>
+<td align="right">549</td>
+<td align="right">93</td>
+<td align="right">93</td>
+<td align="right">9</td>
+<td align="right">283</td>
+<td align="right">0.368</td>
+</tr>
+<tr class="even">
+<td align="left">Carter</td>
+<td align="left">Starling Marte</td>
+<td align="left">OF1</td>
+<td align="left">steamer</td>
+<td align="right">514</td>
+<td align="right">70</td>
+<td align="right">67</td>
+<td align="right">32</td>
+<td align="right">229</td>
+<td align="right">0.342</td>
+</tr>
+<tr class="odd">
+<td align="left">Carter</td>
+<td align="left">Ryan Braun</td>
+<td align="left">OF2</td>
+<td align="left">steamer</td>
+<td align="right">492</td>
+<td align="right">71</td>
+<td align="right">77</td>
+<td align="right">12</td>
+<td align="right">241</td>
+<td align="right">0.346</td>
+</tr>
+<tr class="even">
+<td align="left">Carter</td>
+<td align="left">Jay Bruce</td>
+<td align="left">OF3</td>
+<td align="left">steamer</td>
+<td align="right">439</td>
+<td align="right">55</td>
+<td align="right">65</td>
+<td align="right">5</td>
+<td align="right">195</td>
+<td align="right">0.302</td>
+</tr>
+<tr class="odd">
+<td align="left">Carter</td>
+<td align="left">Rougned Odor</td>
+<td align="left">Util</td>
+<td align="left">steamer</td>
+<td align="right">565</td>
+<td align="right">78</td>
+<td align="right">89</td>
+<td align="right">13</td>
+<td align="right">273</td>
+<td align="right">0.314</td>
+</tr>
+<tr class="even">
+<td align="left">Carter</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">4656</td>
+<td align="right">670</td>
+<td align="right">703</td>
+<td align="right">131</td>
+<td align="right">2222</td>
+<td align="right">0.336</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ab</th>
+<th align="right">r</th>
+<th align="right">rbi</th>
+<th align="right">sb</th>
+<th align="right">tb</th>
+<th align="right">obp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Mintz</td>
+<td align="left">J.T. Realmuto</td>
+<td align="left">C</td>
+<td align="left">steamer</td>
+<td align="right">418</td>
+<td align="right">44</td>
+<td align="right">50</td>
+<td align="right">8</td>
+<td align="right">172</td>
+<td align="right">0.317</td>
+</tr>
+<tr class="even">
+<td align="left">Mintz</td>
+<td align="left">Eric Hosmer</td>
+<td align="left">1B</td>
+<td align="left">steamer</td>
+<td align="right">561</td>
+<td align="right">75</td>
+<td align="right">83</td>
+<td align="right">5</td>
+<td align="right">256</td>
+<td align="right">0.345</td>
+</tr>
+<tr class="odd">
+<td align="left">Mintz</td>
+<td align="left">DJ LeMahieu</td>
+<td align="left">2B</td>
+<td align="left">steamer</td>
+<td align="right">562</td>
+<td align="right">82</td>
+<td align="right">58</td>
+<td align="right">13</td>
+<td align="right">240</td>
+<td align="right">0.368</td>
+</tr>
+<tr class="even">
+<td align="left">Mintz</td>
+<td align="left">Tim Anderson</td>
+<td align="left">SS</td>
+<td align="left">steamer</td>
+<td align="right">596</td>
+<td align="right">69</td>
+<td align="right">58</td>
+<td align="right">21</td>
+<td align="right">230</td>
+<td align="right">0.298</td>
+</tr>
+<tr class="odd">
+<td align="left">Mintz</td>
+<td align="left">Evan Longoria</td>
+<td align="left">3B</td>
+<td align="left">steamer</td>
+<td align="right">566</td>
+<td align="right">75</td>
+<td align="right">85</td>
+<td align="right">2</td>
+<td align="right">261</td>
+<td align="right">0.325</td>
+</tr>
+<tr class="even">
+<td align="left">Mintz</td>
+<td align="left">Andrew McCutchen</td>
+<td align="left">OF1</td>
+<td align="left">steamer</td>
+<td align="right">535</td>
+<td align="right">82</td>
+<td align="right">80</td>
+<td align="right">8</td>
+<td align="right">253</td>
+<td align="right">0.378</td>
+</tr>
+<tr class="odd">
+<td align="left">Mintz</td>
+<td align="left">Christian Yelich</td>
+<td align="left">OF2</td>
+<td align="left">steamer</td>
+<td align="right">549</td>
+<td align="right">81</td>
+<td align="right">72</td>
+<td align="right">12</td>
+<td align="right">249</td>
+<td align="right">0.373</td>
+</tr>
+<tr class="even">
+<td align="left">Mintz</td>
+<td align="left">Justin Upton</td>
+<td align="left">OF3</td>
+<td align="left">steamer</td>
+<td align="right">530</td>
+<td align="right">78</td>
+<td align="right">85</td>
+<td align="right">10</td>
+<td align="right">250</td>
+<td align="right">0.338</td>
+</tr>
+<tr class="odd">
+<td align="left">Mintz</td>
+<td align="left">J.D. Martinez</td>
+<td align="left">Util</td>
+<td align="left">steamer</td>
+<td align="right">507</td>
+<td align="right">75</td>
+<td align="right">81</td>
+<td align="right">3</td>
+<td align="right">247</td>
+<td align="right">0.337</td>
+</tr>
+<tr class="even">
+<td align="left">Mintz</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">4824</td>
+<td align="right">661</td>
+<td align="right">652</td>
+<td align="right">82</td>
+<td align="right">2158</td>
+<td align="right">0.342</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ab</th>
+<th align="right">r</th>
+<th align="right">rbi</th>
+<th align="right">sb</th>
+<th align="right">tb</th>
+<th align="right">obp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bench</td>
+<td align="left">Brandon Belt</td>
+<td align="left">1B</td>
+<td align="left">steamer</td>
+<td align="right">507</td>
+<td align="right">71</td>
+<td align="right">69</td>
+<td align="right">4</td>
+<td align="right">223</td>
+<td align="right">0.358</td>
+</tr>
+<tr class="even">
+<td align="left">Bench</td>
+<td align="left">Jonathan Schoop</td>
+<td align="left">2B</td>
+<td align="left">steamer</td>
+<td align="right">522</td>
+<td align="right">65</td>
+<td align="right">74</td>
+<td align="right">3</td>
+<td align="right">234</td>
+<td align="right">0.296</td>
+</tr>
+<tr class="odd">
+<td align="left">Bench</td>
+<td align="left">Carlos Correa</td>
+<td align="left">SS</td>
+<td align="left">steamer</td>
+<td align="right">553</td>
+<td align="right">83</td>
+<td align="right">86</td>
+<td align="right">14</td>
+<td align="right">259</td>
+<td align="right">0.358</td>
+</tr>
+<tr class="even">
+<td align="left">Bench</td>
+<td align="left">Manny Machado</td>
+<td align="left">3B</td>
+<td align="left">steamer</td>
+<td align="right">576</td>
+<td align="right">93</td>
+<td align="right">100</td>
+<td align="right">7</td>
+<td align="right">304</td>
+<td align="right">0.354</td>
+</tr>
+<tr class="odd">
+<td align="left">Bench</td>
+<td align="left">George Springer</td>
+<td align="left">OF1</td>
+<td align="left">steamer</td>
+<td align="right">535</td>
+<td align="right">90</td>
+<td align="right">76</td>
+<td align="right">13</td>
+<td align="right">246</td>
+<td align="right">0.356</td>
+</tr>
+<tr class="even">
+<td align="left">Bench</td>
+<td align="left">Gregory Polanco</td>
+<td align="left">OF2</td>
+<td align="left">steamer</td>
+<td align="right">537</td>
+<td align="right">74</td>
+<td align="right">70</td>
+<td align="right">19</td>
+<td align="right">233</td>
+<td align="right">0.333</td>
+</tr>
+<tr class="odd">
+<td align="left">Bench</td>
+<td align="left">Matt Kemp</td>
+<td align="left">OF3</td>
+<td align="left">steamer</td>
+<td align="right">541</td>
+<td align="right">67</td>
+<td align="right">83</td>
+<td align="right">3</td>
+<td align="right">247</td>
+<td align="right">0.320</td>
+</tr>
+<tr class="even">
+<td align="left">Bench</td>
+<td align="left">Matt Carpenter</td>
+<td align="left">Util</td>
+<td align="left">steamer</td>
+<td align="right">545</td>
+<td align="right">86</td>
+<td align="right">69</td>
+<td align="right">4</td>
+<td align="right">243</td>
+<td align="right">0.370</td>
+</tr>
+<tr class="odd">
+<td align="left">Bench</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">4316</td>
+<td align="right">629</td>
+<td align="right">627</td>
+<td align="right">67</td>
+<td align="right">1989</td>
+<td align="right">0.343</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ab</th>
+<th align="right">r</th>
+<th align="right">rbi</th>
+<th align="right">sb</th>
+<th align="right">tb</th>
+<th align="right">obp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Whet</td>
+<td align="left">Yasmani Grandal</td>
+<td align="left">C</td>
+<td align="left">steamer</td>
+<td align="right">386</td>
+<td align="right">55</td>
+<td align="right">59</td>
+<td align="right">2</td>
+<td align="right">170</td>
+<td align="right">0.346</td>
+</tr>
+<tr class="even">
+<td align="left">Whet</td>
+<td align="left">Anthony Rizzo</td>
+<td align="left">1B</td>
+<td align="left">steamer</td>
+<td align="right">534</td>
+<td align="right">91</td>
+<td align="right">98</td>
+<td align="right">7</td>
+<td align="right">278</td>
+<td align="right">0.381</td>
+</tr>
+<tr class="odd">
+<td align="left">Whet</td>
+<td align="left">Robinson Cano</td>
+<td align="left">2B</td>
+<td align="left">steamer</td>
+<td align="right">577</td>
+<td align="right">79</td>
+<td align="right">89</td>
+<td align="right">3</td>
+<td align="right">274</td>
+<td align="right">0.344</td>
+</tr>
+<tr class="even">
+<td align="left">Whet</td>
+<td align="left">Marcus Semien</td>
+<td align="left">SS</td>
+<td align="left">steamer</td>
+<td align="right">523</td>
+<td align="right">66</td>
+<td align="right">69</td>
+<td align="right">9</td>
+<td align="right">222</td>
+<td align="right">0.315</td>
+</tr>
+<tr class="odd">
+<td align="left">Whet</td>
+<td align="left">Kyle Seager</td>
+<td align="left">3B</td>
+<td align="left">steamer</td>
+<td align="right">535</td>
+<td align="right">76</td>
+<td align="right">82</td>
+<td align="right">4</td>
+<td align="right">248</td>
+<td align="right">0.344</td>
+</tr>
+<tr class="even">
+<td align="left">Whet</td>
+<td align="left">Billy Hamilton</td>
+<td align="left">OF1</td>
+<td align="left">steamer</td>
+<td align="right">521</td>
+<td align="right">66</td>
+<td align="right">41</td>
+<td align="right">56</td>
+<td align="right">178</td>
+<td align="right">0.303</td>
+</tr>
+<tr class="odd">
+<td align="left">Whet</td>
+<td align="left">Carlos Gomez</td>
+<td align="left">OF2</td>
+<td align="left">steamer</td>
+<td align="right">487</td>
+<td align="right">68</td>
+<td align="right">58</td>
+<td align="right">19</td>
+<td align="right">202</td>
+<td align="right">0.318</td>
+</tr>
+<tr class="even">
+<td align="left">Whet</td>
+<td align="left">Travis Jankowski</td>
+<td align="left">OF3</td>
+<td align="left">steamer</td>
+<td align="right">520</td>
+<td align="right">58</td>
+<td align="right">41</td>
+<td align="right">34</td>
+<td align="right">174</td>
+<td align="right">0.319</td>
+</tr>
+<tr class="odd">
+<td align="left">Whet</td>
+<td align="left">Wil Myers</td>
+<td align="left">Util</td>
+<td align="left">steamer</td>
+<td align="right">532</td>
+<td align="right">72</td>
+<td align="right">75</td>
+<td align="right">18</td>
+<td align="right">239</td>
+<td align="right">0.334</td>
+</tr>
+<tr class="even">
+<td align="left">Whet</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">4615</td>
+<td align="right">631</td>
+<td align="right">612</td>
+<td align="right">152</td>
+<td align="right">1985</td>
+<td align="right">0.334</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ab</th>
+<th align="right">r</th>
+<th align="right">rbi</th>
+<th align="right">sb</th>
+<th align="right">tb</th>
+<th align="right">obp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Eric</td>
+<td align="left">Francisco Cervelli</td>
+<td align="left">C</td>
+<td align="left">steamer</td>
+<td align="right">343</td>
+<td align="right">37</td>
+<td align="right">37</td>
+<td align="right">4</td>
+<td align="right">123</td>
+<td align="right">0.356</td>
+</tr>
+<tr class="even">
+<td align="left">Eric</td>
+<td align="left">Freddie Freeman</td>
+<td align="left">1B</td>
+<td align="left">steamer</td>
+<td align="right">541</td>
+<td align="right">84</td>
+<td align="right">87</td>
+<td align="right">4</td>
+<td align="right">265</td>
+<td align="right">0.378</td>
+</tr>
+<tr class="odd">
+<td align="left">Eric</td>
+<td align="left">Jose Ramirez</td>
+<td align="left">2B</td>
+<td align="left">steamer</td>
+<td align="right">513</td>
+<td align="right">66</td>
+<td align="right">63</td>
+<td align="right">19</td>
+<td align="right">216</td>
+<td align="right">0.344</td>
+</tr>
+<tr class="even">
+<td align="left">Eric</td>
+<td align="left">Corey Seager</td>
+<td align="left">SS</td>
+<td align="left">steamer</td>
+<td align="right">585</td>
+<td align="right">86</td>
+<td align="right">79</td>
+<td align="right">4</td>
+<td align="right">278</td>
+<td align="right">0.342</td>
+</tr>
+<tr class="odd">
+<td align="left">Eric</td>
+<td align="left">Justin Turner</td>
+<td align="left">3B</td>
+<td align="left">steamer</td>
+<td align="right">513</td>
+<td align="right">71</td>
+<td align="right">74</td>
+<td align="right">4</td>
+<td align="right">233</td>
+<td align="right">0.345</td>
+</tr>
+<tr class="even">
+<td align="left">Eric</td>
+<td align="left">Mike Trout</td>
+<td align="left">OF1</td>
+<td align="left">steamer</td>
+<td align="right">526</td>
+<td align="right">102</td>
+<td align="right">100</td>
+<td align="right">19</td>
+<td align="right">298</td>
+<td align="right">0.419</td>
+</tr>
+<tr class="odd">
+<td align="left">Eric</td>
+<td align="left">Bryce Harper</td>
+<td align="left">OF2</td>
+<td align="left">steamer</td>
+<td align="right">489</td>
+<td align="right">91</td>
+<td align="right">91</td>
+<td align="right">15</td>
+<td align="right">261</td>
+<td align="right">0.413</td>
+</tr>
+<tr class="even">
+<td align="left">Eric</td>
+<td align="left">Nomar Mazara</td>
+<td align="left">OF3</td>
+<td align="left">steamer</td>
+<td align="right">491</td>
+<td align="right">64</td>
+<td align="right">68</td>
+<td align="right">2</td>
+<td align="right">213</td>
+<td align="right">0.332</td>
+</tr>
+<tr class="odd">
+<td align="left">Eric</td>
+<td align="left">Cesar Hernandez</td>
+<td align="left">Util</td>
+<td align="left">steamer</td>
+<td align="right">554</td>
+<td align="right">69</td>
+<td align="right">46</td>
+<td align="right">17</td>
+<td align="right">201</td>
+<td align="right">0.342</td>
+</tr>
+<tr class="even">
+<td align="left">Eric</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">4555</td>
+<td align="right">670</td>
+<td align="right">645</td>
+<td align="right">88</td>
+<td align="right">2088</td>
+<td align="right">0.363</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ab</th>
+<th align="right">r</th>
+<th align="right">rbi</th>
+<th align="right">sb</th>
+<th align="right">tb</th>
+<th align="right">obp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">PTB</td>
+<td align="left">Stephen Vogt</td>
+<td align="left">C</td>
+<td align="left">steamer</td>
+<td align="right">454</td>
+<td align="right">57</td>
+<td align="right">57</td>
+<td align="right">1</td>
+<td align="right">188</td>
+<td align="right">0.322</td>
+</tr>
+<tr class="even">
+<td align="left">PTB</td>
+<td align="left">Carlos Santana</td>
+<td align="left">1B</td>
+<td align="left">steamer</td>
+<td align="right">536</td>
+<td align="right">93</td>
+<td align="right">79</td>
+<td align="right">6</td>
+<td align="right">246</td>
+<td align="right">0.372</td>
+</tr>
+<tr class="odd">
+<td align="left">PTB</td>
+<td align="left">Jose Altuve</td>
+<td align="left">2B</td>
+<td align="left">steamer</td>
+<td align="right">595</td>
+<td align="right">92</td>
+<td align="right">76</td>
+<td align="right">28</td>
+<td align="right">279</td>
+<td align="right">0.365</td>
+</tr>
+<tr class="even">
+<td align="left">PTB</td>
+<td align="left">Aledmys Diaz</td>
+<td align="left">SS</td>
+<td align="left">steamer</td>
+<td align="right">500</td>
+<td align="right">71</td>
+<td align="right">64</td>
+<td align="right">7</td>
+<td align="right">226</td>
+<td align="right">0.342</td>
+</tr>
+<tr class="odd">
+<td align="left">PTB</td>
+<td align="left">Nolan Arenado</td>
+<td align="left">3B</td>
+<td align="left">steamer</td>
+<td align="right">577</td>
+<td align="right">91</td>
+<td align="right">104</td>
+<td align="right">4</td>
+<td align="right">310</td>
+<td align="right">0.348</td>
+</tr>
+<tr class="even">
+<td align="left">PTB</td>
+<td align="left">Odubel Herrera</td>
+<td align="left">OF1</td>
+<td align="left">steamer</td>
+<td align="right">572</td>
+<td align="right">74</td>
+<td align="right">58</td>
+<td align="right">19</td>
+<td align="right">226</td>
+<td align="right">0.339</td>
+</tr>
+<tr class="odd">
+<td align="left">PTB</td>
+<td align="left">Yoenis Cespedes</td>
+<td align="left">OF2</td>
+<td align="left">steamer</td>
+<td align="right">532</td>
+<td align="right">72</td>
+<td align="right">84</td>
+<td align="right">4</td>
+<td align="right">256</td>
+<td align="right">0.322</td>
+</tr>
+<tr class="even">
+<td align="left">PTB</td>
+<td align="left">Max Kepler</td>
+<td align="left">OF3</td>
+<td align="left">steamer</td>
+<td align="right">485</td>
+<td align="right">63</td>
+<td align="right">66</td>
+<td align="right">8</td>
+<td align="right">211</td>
+<td align="right">0.333</td>
+</tr>
+<tr class="odd">
+<td align="left">PTB</td>
+<td align="left">Edwin Encarnacion</td>
+<td align="left">Util</td>
+<td align="left">steamer</td>
+<td align="right">493</td>
+<td align="right">78</td>
+<td align="right">89</td>
+<td align="right">2</td>
+<td align="right">239</td>
+<td align="right">0.349</td>
+</tr>
+<tr class="even">
+<td align="left">PTB</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">4744</td>
+<td align="right">691</td>
+<td align="right">677</td>
+<td align="right">79</td>
+<td align="right">2181</td>
+<td align="right">0.344</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ab</th>
+<th align="right">r</th>
+<th align="right">rbi</th>
+<th align="right">sb</th>
+<th align="right">tb</th>
+<th align="right">obp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">MCard</td>
+<td align="left">Welington Castillo</td>
+<td align="left">C</td>
+<td align="left">steamer</td>
+<td align="right">340</td>
+<td align="right">42</td>
+<td align="right">45</td>
+<td align="right">2</td>
+<td align="right">139</td>
+<td align="right">0.311</td>
+</tr>
+<tr class="even">
+<td align="left">MCard</td>
+<td align="left">Miguel Cabrera</td>
+<td align="left">1B</td>
+<td align="left">steamer</td>
+<td align="right">538</td>
+<td align="right">92</td>
+<td align="right">97</td>
+<td align="right">1</td>
+<td align="right">290</td>
+<td align="right">0.393</td>
+</tr>
+<tr class="odd">
+<td align="left">MCard</td>
+<td align="left">Dustin Pedroia</td>
+<td align="left">2B</td>
+<td align="left">steamer</td>
+<td align="right">545</td>
+<td align="right">81</td>
+<td align="right">62</td>
+<td align="right">6</td>
+<td align="right">227</td>
+<td align="right">0.354</td>
+</tr>
+<tr class="even">
+<td align="left">MCard</td>
+<td align="left">Jonathan Villar</td>
+<td align="left">SS</td>
+<td align="left">steamer</td>
+<td align="right">564</td>
+<td align="right">83</td>
+<td align="right">55</td>
+<td align="right">49</td>
+<td align="right">224</td>
+<td align="right">0.333</td>
+</tr>
+<tr class="odd">
+<td align="left">MCard</td>
+<td align="left">Ryon Healy</td>
+<td align="left">3B</td>
+<td align="left">steamer</td>
+<td align="right">528</td>
+<td align="right">62</td>
+<td align="right">70</td>
+<td align="right">2</td>
+<td align="right">230</td>
+<td align="right">0.312</td>
+</tr>
+<tr class="even">
+<td align="left">MCard</td>
+<td align="left">Carlos Gonzalez</td>
+<td align="left">OF1</td>
+<td align="left">steamer</td>
+<td align="right">531</td>
+<td align="right">78</td>
+<td align="right">92</td>
+<td align="right">3</td>
+<td align="right">271</td>
+<td align="right">0.344</td>
+</tr>
+<tr class="odd">
+<td align="left">MCard</td>
+<td align="left">Giancarlo Stanton</td>
+<td align="left">OF2</td>
+<td align="left">steamer</td>
+<td align="right">441</td>
+<td align="right">74</td>
+<td align="right">88</td>
+<td align="right">3</td>
+<td align="right">245</td>
+<td align="right">0.363</td>
+</tr>
+<tr class="even">
+<td align="left">MCard</td>
+<td align="left">Dexter Fowler</td>
+<td align="left">OF3</td>
+<td align="left">steamer</td>
+<td align="right">513</td>
+<td align="right">80</td>
+<td align="right">50</td>
+<td align="right">14</td>
+<td align="right">202</td>
+<td align="right">0.360</td>
+</tr>
+<tr class="odd">
+<td align="left">MCard</td>
+<td align="left">Jason Kipnis</td>
+<td align="left">Util</td>
+<td align="left">steamer</td>
+<td align="right">525</td>
+<td align="right">76</td>
+<td align="right">64</td>
+<td align="right">12</td>
+<td align="right">219</td>
+<td align="right">0.341</td>
+</tr>
+<tr class="even">
+<td align="left">MCard</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">4525</td>
+<td align="right">668</td>
+<td align="right">623</td>
+<td align="right">92</td>
+<td align="right">2047</td>
+<td align="right">0.347</td>
+</tr>
+</tbody>
+</table>
+<p>print each team - pitchers</p>
+<pre class="r"><code>p_sum_pipe &lt;- . %&gt;%
+  dplyr::mutate(total_r = ip * era/9, total_wh = ip * whip) %&gt;%
+  dplyr::summarize(
+    ip = sum(ip),
+    w = sum(w),
+    sv = sum(sv),
+    k = sum(k),
+    era = (sum(total_r) / sum(ip)) * 9,
+    whip = sum(total_wh) / sum(ip)
+  ) 
+
+knitr_out_p &lt;- list()
+
+for (i in unq_owners) {
+  
+  this_owner &lt;- active_p %&gt;%
+    dplyr::filter(owner == i)
+  
+  team_format &lt;- this_owner %&gt;%
+    dplyr::select(owner, name, pos, projection_name, ip, w, sv, k, era, whip) %&gt;%
+    dplyr::rename(
+      player = name,
+      system = projection_name
+    ) %&gt;%
+    dplyr::arrange(pos)
+  
+  team_format_sum &lt;- team_format %&gt;%
+    dplyr::mutate(player = 'total', pos = '') %&gt;%
+    dplyr::group_by(owner, player, pos, system) %&gt;%
+    p_sum_pipe() %&gt;%
+    dplyr::ungroup()
+  
+  team_format$pos &lt;- as.character(team_format$pos)
+  final &lt;- rbind(team_format, team_format_sum)
+  
+  knitr_out_p[[i]] &lt;- knitr::kable(final, digits = 3, format = 'markdown')
+  
+  print.AsIs(final, digits = 3)
+  cat('\n')
+}</code></pre>
+<pre><code>##    owner            player pos  system   ip  w  sv    k  era whip
+## 1    ALM      Chris Archer SP1 steamer  199 13   0  211 3.38 1.19
+## 2    ALM       John Lackey SP2 steamer  180 11   0  164 3.98 1.24
+## 3    ALM      Jake Arrieta SP3 steamer  195 13   0  182 3.54 1.25
+## 4    ALM   Aroldis Chapman RP1 steamer   65  4  35  104 2.33 1.02
+## 5    ALM     Mark Melancon RP2 steamer   65  4  38   62 2.92 1.16
+## 6    ALM     Seung Hwan Oh RP3 steamer   65  3  36   72 3.20 1.14
+## 7    ALM    Marcus Stroman  P1 steamer  169 11   0  139 3.73 1.29
+## 8    ALM Francisco Liriano  P2 steamer  148 10   0  152 4.00 1.37
+## 9    ALM        Drew Smyly  P3 steamer   93  6   0   87 4.01 1.23
+## 10   ALM             total     steamer 1179 75 109 1173 3.58 1.23
+## 
+##     owner            player pos  system   ip  w sv    k  era whip
+## 1  Moacir   Clayton Kershaw SP1 steamer  207 16  0  246 2.39 0.97
+## 2  Moacir        Chris Sale SP2 steamer  213 15  0  221 3.50 1.13
+## 3  Moacir Vincent Velasquez SP3 steamer  157  9  0  171 3.96 1.25
+## 4  Moacir     Roberto Osuna RP1 steamer   65  3 33   74 3.51 1.14
+## 5  Moacir     Hector Rondon RP2 steamer   65  4  2   70 3.17 1.15
+## 6  Moacir   Fernando Rodney RP3 steamer   65  3 29   64 3.80 1.38
+## 7  Moacir   Vince Velasquez  P1 steamer  157  9  0  171 3.96 1.25
+## 8  Moacir    Matt Shoemaker  P2 steamer  194 12  0  169 3.85 1.20
+## 9  Moacir        Robbie Ray  P3 steamer  168 11  0  186 3.63 1.27
+## 10 Moacir             total     steamer 1291 82 64 1372 3.50 1.18
+## 
+##    owner          player pos  system  ip  w sv   k  era whip
+## 1   Czap     Julio Urias SP1 steamer 105  8  0 113 3.30 1.22
+## 2   Czap Adam Wainwright SP2 steamer 170 10  0 136 3.90 1.30
+## 3   Czap    Jose De Leon SP3 steamer  72  5  0  78 3.57 1.20
+## 4   Czap   Andrew Miller RP1 steamer  65  4 20  97 2.19 0.95
+## 5   Czap Dellin Betances RP2 steamer  65  4  2  98 2.46 1.04
+## 6   Czap      Cody Allen RP3 steamer  65  4 18  79 3.26 1.19
+## 7   Czap     Tony Watson  P1 steamer  65  3 36  60 3.67 1.26
+## 8   Czap    Carter Capps  P2 steamer  45  2  0  57 3.10 1.16
+## 9   Czap  Luke Gregerson  P3 steamer  65  3  8  64 3.50 1.22
+## 10  Czap           total     steamer 717 43 84 782 3.33 1.19
+## 
+##    owner           player pos  system   ip  w sv    k  era whip
+## 1   Omar       Jon Lester SP1 steamer  204 14  0  204 3.42 1.17
+## 2   Omar Garrett Richards SP2 steamer  158 10  0  143 3.54 1.29
+## 3   Omar     Wei-Yin Chen SP3 steamer  169 10  0  136 3.91 1.24
+## 4   Omar Kyle Barraclough RP1 steamer   65  3 12   85 3.06 1.31
+## 5   Omar      Ryan Madson RP2 steamer   65  3 23   56 3.94 1.33
+## 6   Omar     Darren O'Day RP3 steamer   65  3  2   67 3.94 1.25
+## 7   Omar   Dallas Keuchel  P1 steamer  201 13  0  167 3.54 1.27
+## 8   Omar    Jose Quintana  P2 steamer  204 12  0  181 3.81 1.25
+## 9   Omar    Danny Salazar  P3 steamer  169 12  0  178 3.76 1.26
+## 10  Omar            total     steamer 1300 80 37 1217 3.66 1.25
+## 
+##   owner         player pos  system   ip  w sv    k  era whip
+## 1  Saud   Johnny Cueto SP1 steamer  209 13  0  172 3.44 1.21
+## 2  Saud   Jacob deGrom SP2 steamer  180 11  0  177 3.57 1.20
+## 3  Saud    Kenta Maeda SP3 steamer  148 10  0  139 3.70 1.20
+## 4  Saud     Wade Davis RP1 steamer   65  4 37   77 2.89 1.14
+## 5  Saud  Xavier Cedeno RP2 steamer   65  3 12   62 3.39 1.26
+## 6  Saud   Zack Greinke  P1 steamer  186 11  0  159 3.83 1.25
+## 7  Saud  Jharel Cotton  P2 steamer  148  9  0  140 4.16 1.32
+## 8  Saud Jerad Eickhoff  P3 steamer  152  8  0  133 4.27 1.28
+## 9  Saud          total     steamer 1153 69 49 1059 3.72 1.24
+## 
+##     owner           player pos  system   ip  w sv    k  era whip
+## 1  Carter Justin Verlander SP1 steamer  208 14  0  213 3.65 1.18
+## 2  Carter      Cole Hamels SP2 steamer  204 13  0  186 4.07 1.32
+## 3  Carter  Lance McCullers SP3 steamer  148 10  0  163 3.57 1.31
+## 4  Carter        Ken Giles RP1 steamer   65  4 27   85 2.98 1.13
+## 5  Carter    Cam Bedrosian RP2 steamer   65  3 33   73 3.26 1.25
+## 6  Carter      Koji Uehara RP3 steamer   55  3  2   63 3.25 1.07
+## 7  Carter    Jake Odorizzi  P1 steamer  162  9  0  146 4.10 1.26
+## 8  Carter       Matt Moore  P2 steamer  178 11  0  171 3.67 1.27
+## 9  Carter      Ian Kennedy  P3 steamer  184 10  0  169 4.34 1.29
+## 10 Carter            total     steamer 1269 77 62 1269 3.80 1.25
+## 
+##    owner           player pos  system   ip  w sv    k  era whip
+## 1  Mintz Noah Syndergaard SP1 steamer  199 13  0  234 3.10 1.10
+## 2  Mintz     Corey Kluber SP2 steamer  211 14  0  221 3.42 1.15
+## 3  Mintz  Felix Hernandez SP3 steamer  203 12  0  170 3.91 1.32
+## 4  Mintz   Jeurys Familia RP1 steamer   65  3 38   70 3.17 1.26
+## 5  Mintz     Shawn Kelley RP2 steamer   65  4 14   78 3.22 1.15
+## 6  Mintz  David Robertson RP3 steamer   65  3 32   75 3.57 1.24
+## 7  Mintz      Steven Matz  P1 steamer  132  8  0  130 3.55 1.23
+## 8  Mintz     Gio Gonzalez  P2 steamer  165 11  0  153 3.74 1.32
+## 9  Mintz     James Paxton  P3 steamer  171 11  0  158 3.53 1.24
+## 10 Mintz            total     steamer 1276 79 84 1289 3.50 1.22
+## 
+##    owner            player pos  system   ip  w sv    k  era whip
+## 1  Bench Stephen Strasburg SP1 steamer  177 13  0  206 3.29 1.13
+## 2  Bench   Carlos Carrasco SP2 steamer  186 13  0  189 3.37 1.17
+## 3  Bench    Michael Pineda SP3 steamer  152 11  0  158 3.52 1.16
+## 4  Bench     Craig Kimbrel RP1 steamer   65  4 35   87 3.06 1.17
+## 5  Bench         Sam Dyson RP2 steamer   65  3 34   56 3.63 1.35
+## 6  Bench  Brandon Kintzler RP3 steamer   65  3 17   45 4.03 1.38
+## 7  Bench     Kevin Gausman  P1 steamer  178 11  0  166 4.07 1.27
+## 8  Bench   Carlos Martinez  P2 steamer  199 13  0  190 3.59 1.31
+## 9  Bench    Michael Fulmer  P3 steamer  175 11  0  150 4.02 1.30
+## 10 Bench             total     steamer 1262 82 86 1247 3.63 1.24
+## 
+##    owner            player pos  system   ip  w  sv    k  era whip
+## 1   Whet Madison Bumgarner SP1 steamer  209 14   0  219 3.20 1.12
+## 2   Whet     Julio Teheran SP2 steamer  183 10   0  167 4.10 1.27
+## 3   Whet   Jameson Taillon SP3 steamer  175 11   0  155 3.60 1.21
+## 4   Whet     Kenley Jansen RP1 steamer   65  4  39   92 2.59 0.95
+## 5   Whet    Kelvin Herrera RP2 steamer   65  3  33   70 3.19 1.18
+## 6   Whet    Sean Doolittle RP3 steamer   65  3  11   75 3.31 1.12
+## 7   Whet       Gerrit Cole  P1 steamer  189 12   0  174 3.70 1.25
+## 8   Whet   Arodys Vizcaino  P2 steamer   65  3  24   76 3.42 1.30
+## 9   Whet     Collin McHugh  P3 steamer  162 10   0  141 4.15 1.27
+## 10  Whet             total     steamer 1178 70 107 1169 3.59 1.20
+## 
+##    owner          player pos  system   ip  w sv    k  era whip
+## 1   Eric    Max Scherzer SP1 steamer  203 15  0  245 3.18 1.06
+## 2   Eric     Matt Harvey SP2 steamer  144  9  0  132 3.75 1.22
+## 3   Eric       Rich Hill SP3 steamer  145 10  0  155 3.35 1.22
+## 4   Eric      Edwin Diaz RP1 steamer   65  4 35   80 2.82 1.08
+## 5   Eric Raisel Iglesias RP2 steamer   65  3 33   72 3.43 1.17
+## 6   Eric    Grant Dayton RP3 steamer   65  4  1   82 2.95 1.10
+## 7   Eric Masahiro Tanaka  P1 steamer  205 13  0  174 3.91 1.22
+## 8   Eric   Blake Treinen  P2 steamer   65  3 23   64 3.35 1.33
+## 9   Eric       Matt Bush  P3 steamer   65  3  1   68 3.52 1.22
+## 10  Eric           total     steamer 1022 64 93 1072 3.44 1.18
+## 
+##    owner         player pos  system  ip  w sv   k  era whip
+## 1    PTB     Yu Darvish SP1 steamer 195 13  0 228 3.58 1.18
+## 2    PTB   Tyler Skaggs SP2 steamer 136  9  0 134 3.57 1.24
+## 3    PTB    Sean Manaea SP3 steamer 162  9  0 141 4.16 1.35
+## 4    PTB   Zach Britton RP1 steamer  65  4 33  74 2.51 1.16
+## 5    PTB    Alex Colome RP2 steamer  65  3 27  66 3.33 1.19
+## 6    PTB     Nate Jones RP3 steamer  65  3  1  74 3.28 1.19
+## 7    PTB   Addison Reed  P1 steamer  65  3  3  69 3.61 1.20
+## 8    PTB Matthew Strahm  P2 steamer  55  3  1  58 3.33 1.22
+## 9    PTB    Matt Strahm  P3 steamer  55  3  1  58 3.33 1.22
+## 10   PTB          total     steamer 863 50 66 902 3.54 1.23
+## 
+##    owner        player pos  system   ip  w sv    k  era whip
+## 1  MCard      Jon Gray SP1 steamer  184 12  0  188 4.17 1.33
+## 2  MCard    Aaron Nola SP2 steamer  166 10  0  157 3.66 1.23
+## 3  MCard      Joe Ross SP3 steamer  146 10  0  128 3.99 1.29
+## 4  MCard  Greg Holland RP1 steamer   65  3 17   74 3.52 1.28
+## 5  MCard Adam Ottavino RP2 steamer   65  3 12   71 3.63 1.26
+## 6  MCard Daniel Hudson RP3 steamer   65  3  2   62 3.76 1.30
+## 7  MCard   Danny Duffy  P1 steamer  187 11  0  173 3.88 1.25
+## 8  MCard  Carlos Rodon  P2 steamer  143  8  0  146 3.96 1.32
+## 9  MCard Andrew Bailey  P3 steamer   65  3  2   60 4.00 1.30
+## 10 MCard         total     steamer 1086 63 33 1059 3.88 1.28</code></pre>
+<pre class="r"><code>for (i in knitr_out_p) {
+  print(i)
+}</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ip</th>
+<th align="right">w</th>
+<th align="right">sv</th>
+<th align="right">k</th>
+<th align="right">era</th>
+<th align="right">whip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ALM</td>
+<td align="left">Chris Archer</td>
+<td align="left">SP1</td>
+<td align="left">steamer</td>
+<td align="right">199</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">211</td>
+<td align="right">3.380</td>
+<td align="right">1.190</td>
+</tr>
+<tr class="even">
+<td align="left">ALM</td>
+<td align="left">John Lackey</td>
+<td align="left">SP2</td>
+<td align="left">steamer</td>
+<td align="right">180</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">164</td>
+<td align="right">3.980</td>
+<td align="right">1.240</td>
+</tr>
+<tr class="odd">
+<td align="left">ALM</td>
+<td align="left">Jake Arrieta</td>
+<td align="left">SP3</td>
+<td align="left">steamer</td>
+<td align="right">195</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">182</td>
+<td align="right">3.540</td>
+<td align="right">1.250</td>
+</tr>
+<tr class="even">
+<td align="left">ALM</td>
+<td align="left">Aroldis Chapman</td>
+<td align="left">RP1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">35</td>
+<td align="right">104</td>
+<td align="right">2.330</td>
+<td align="right">1.020</td>
+</tr>
+<tr class="odd">
+<td align="left">ALM</td>
+<td align="left">Mark Melancon</td>
+<td align="left">RP2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">38</td>
+<td align="right">62</td>
+<td align="right">2.920</td>
+<td align="right">1.160</td>
+</tr>
+<tr class="even">
+<td align="left">ALM</td>
+<td align="left">Seung Hwan Oh</td>
+<td align="left">RP3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">36</td>
+<td align="right">72</td>
+<td align="right">3.200</td>
+<td align="right">1.140</td>
+</tr>
+<tr class="odd">
+<td align="left">ALM</td>
+<td align="left">Marcus Stroman</td>
+<td align="left">P1</td>
+<td align="left">steamer</td>
+<td align="right">169</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">139</td>
+<td align="right">3.730</td>
+<td align="right">1.290</td>
+</tr>
+<tr class="even">
+<td align="left">ALM</td>
+<td align="left">Francisco Liriano</td>
+<td align="left">P2</td>
+<td align="left">steamer</td>
+<td align="right">148</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">152</td>
+<td align="right">4.000</td>
+<td align="right">1.370</td>
+</tr>
+<tr class="odd">
+<td align="left">ALM</td>
+<td align="left">Drew Smyly</td>
+<td align="left">P3</td>
+<td align="left">steamer</td>
+<td align="right">93</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">87</td>
+<td align="right">4.010</td>
+<td align="right">1.230</td>
+</tr>
+<tr class="even">
+<td align="left">ALM</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">1179</td>
+<td align="right">75</td>
+<td align="right">109</td>
+<td align="right">1173</td>
+<td align="right">3.583</td>
+<td align="right">1.234</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ip</th>
+<th align="right">w</th>
+<th align="right">sv</th>
+<th align="right">k</th>
+<th align="right">era</th>
+<th align="right">whip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Moacir</td>
+<td align="left">Clayton Kershaw</td>
+<td align="left">SP1</td>
+<td align="left">steamer</td>
+<td align="right">207</td>
+<td align="right">16</td>
+<td align="right">0</td>
+<td align="right">246</td>
+<td align="right">2.390</td>
+<td align="right">0.970</td>
+</tr>
+<tr class="even">
+<td align="left">Moacir</td>
+<td align="left">Chris Sale</td>
+<td align="left">SP2</td>
+<td align="left">steamer</td>
+<td align="right">213</td>
+<td align="right">15</td>
+<td align="right">0</td>
+<td align="right">221</td>
+<td align="right">3.500</td>
+<td align="right">1.130</td>
+</tr>
+<tr class="odd">
+<td align="left">Moacir</td>
+<td align="left">Vincent Velasquez</td>
+<td align="left">SP3</td>
+<td align="left">steamer</td>
+<td align="right">157</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">171</td>
+<td align="right">3.960</td>
+<td align="right">1.250</td>
+</tr>
+<tr class="even">
+<td align="left">Moacir</td>
+<td align="left">Roberto Osuna</td>
+<td align="left">RP1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">33</td>
+<td align="right">74</td>
+<td align="right">3.510</td>
+<td align="right">1.140</td>
+</tr>
+<tr class="odd">
+<td align="left">Moacir</td>
+<td align="left">Hector Rondon</td>
+<td align="left">RP2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">2</td>
+<td align="right">70</td>
+<td align="right">3.170</td>
+<td align="right">1.150</td>
+</tr>
+<tr class="even">
+<td align="left">Moacir</td>
+<td align="left">Fernando Rodney</td>
+<td align="left">RP3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">29</td>
+<td align="right">64</td>
+<td align="right">3.800</td>
+<td align="right">1.380</td>
+</tr>
+<tr class="odd">
+<td align="left">Moacir</td>
+<td align="left">Vince Velasquez</td>
+<td align="left">P1</td>
+<td align="left">steamer</td>
+<td align="right">157</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">171</td>
+<td align="right">3.960</td>
+<td align="right">1.250</td>
+</tr>
+<tr class="even">
+<td align="left">Moacir</td>
+<td align="left">Matt Shoemaker</td>
+<td align="left">P2</td>
+<td align="left">steamer</td>
+<td align="right">194</td>
+<td align="right">12</td>
+<td align="right">0</td>
+<td align="right">169</td>
+<td align="right">3.850</td>
+<td align="right">1.200</td>
+</tr>
+<tr class="odd">
+<td align="left">Moacir</td>
+<td align="left">Robbie Ray</td>
+<td align="left">P3</td>
+<td align="left">steamer</td>
+<td align="right">168</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">186</td>
+<td align="right">3.630</td>
+<td align="right">1.270</td>
+</tr>
+<tr class="even">
+<td align="left">Moacir</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">1291</td>
+<td align="right">82</td>
+<td align="right">64</td>
+<td align="right">1372</td>
+<td align="right">3.502</td>
+<td align="right">1.176</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ip</th>
+<th align="right">w</th>
+<th align="right">sv</th>
+<th align="right">k</th>
+<th align="right">era</th>
+<th align="right">whip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Czap</td>
+<td align="left">Julio Urias</td>
+<td align="left">SP1</td>
+<td align="left">steamer</td>
+<td align="right">105</td>
+<td align="right">8</td>
+<td align="right">0</td>
+<td align="right">113</td>
+<td align="right">3.300</td>
+<td align="right">1.220</td>
+</tr>
+<tr class="even">
+<td align="left">Czap</td>
+<td align="left">Adam Wainwright</td>
+<td align="left">SP2</td>
+<td align="left">steamer</td>
+<td align="right">170</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">136</td>
+<td align="right">3.900</td>
+<td align="right">1.300</td>
+</tr>
+<tr class="odd">
+<td align="left">Czap</td>
+<td align="left">Jose De Leon</td>
+<td align="left">SP3</td>
+<td align="left">steamer</td>
+<td align="right">72</td>
+<td align="right">5</td>
+<td align="right">0</td>
+<td align="right">78</td>
+<td align="right">3.570</td>
+<td align="right">1.200</td>
+</tr>
+<tr class="even">
+<td align="left">Czap</td>
+<td align="left">Andrew Miller</td>
+<td align="left">RP1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">20</td>
+<td align="right">97</td>
+<td align="right">2.190</td>
+<td align="right">0.950</td>
+</tr>
+<tr class="odd">
+<td align="left">Czap</td>
+<td align="left">Dellin Betances</td>
+<td align="left">RP2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">2</td>
+<td align="right">98</td>
+<td align="right">2.460</td>
+<td align="right">1.040</td>
+</tr>
+<tr class="even">
+<td align="left">Czap</td>
+<td align="left">Cody Allen</td>
+<td align="left">RP3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">18</td>
+<td align="right">79</td>
+<td align="right">3.260</td>
+<td align="right">1.190</td>
+</tr>
+<tr class="odd">
+<td align="left">Czap</td>
+<td align="left">Tony Watson</td>
+<td align="left">P1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">36</td>
+<td align="right">60</td>
+<td align="right">3.670</td>
+<td align="right">1.260</td>
+</tr>
+<tr class="even">
+<td align="left">Czap</td>
+<td align="left">Carter Capps</td>
+<td align="left">P2</td>
+<td align="left">steamer</td>
+<td align="right">45</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">57</td>
+<td align="right">3.100</td>
+<td align="right">1.160</td>
+</tr>
+<tr class="odd">
+<td align="left">Czap</td>
+<td align="left">Luke Gregerson</td>
+<td align="left">P3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">8</td>
+<td align="right">64</td>
+<td align="right">3.500</td>
+<td align="right">1.220</td>
+</tr>
+<tr class="even">
+<td align="left">Czap</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">717</td>
+<td align="right">43</td>
+<td align="right">84</td>
+<td align="right">782</td>
+<td align="right">3.328</td>
+<td align="right">1.193</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ip</th>
+<th align="right">w</th>
+<th align="right">sv</th>
+<th align="right">k</th>
+<th align="right">era</th>
+<th align="right">whip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Omar</td>
+<td align="left">Jon Lester</td>
+<td align="left">SP1</td>
+<td align="left">steamer</td>
+<td align="right">204</td>
+<td align="right">14</td>
+<td align="right">0</td>
+<td align="right">204</td>
+<td align="right">3.420</td>
+<td align="right">1.170</td>
+</tr>
+<tr class="even">
+<td align="left">Omar</td>
+<td align="left">Garrett Richards</td>
+<td align="left">SP2</td>
+<td align="left">steamer</td>
+<td align="right">158</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">143</td>
+<td align="right">3.540</td>
+<td align="right">1.290</td>
+</tr>
+<tr class="odd">
+<td align="left">Omar</td>
+<td align="left">Wei-Yin Chen</td>
+<td align="left">SP3</td>
+<td align="left">steamer</td>
+<td align="right">169</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">136</td>
+<td align="right">3.910</td>
+<td align="right">1.240</td>
+</tr>
+<tr class="even">
+<td align="left">Omar</td>
+<td align="left">Kyle Barraclough</td>
+<td align="left">RP1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">12</td>
+<td align="right">85</td>
+<td align="right">3.060</td>
+<td align="right">1.310</td>
+</tr>
+<tr class="odd">
+<td align="left">Omar</td>
+<td align="left">Ryan Madson</td>
+<td align="left">RP2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">23</td>
+<td align="right">56</td>
+<td align="right">3.940</td>
+<td align="right">1.330</td>
+</tr>
+<tr class="even">
+<td align="left">Omar</td>
+<td align="left">Darren O’Day</td>
+<td align="left">RP3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">67</td>
+<td align="right">3.940</td>
+<td align="right">1.250</td>
+</tr>
+<tr class="odd">
+<td align="left">Omar</td>
+<td align="left">Dallas Keuchel</td>
+<td align="left">P1</td>
+<td align="left">steamer</td>
+<td align="right">201</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">167</td>
+<td align="right">3.540</td>
+<td align="right">1.270</td>
+</tr>
+<tr class="even">
+<td align="left">Omar</td>
+<td align="left">Jose Quintana</td>
+<td align="left">P2</td>
+<td align="left">steamer</td>
+<td align="right">204</td>
+<td align="right">12</td>
+<td align="right">0</td>
+<td align="right">181</td>
+<td align="right">3.810</td>
+<td align="right">1.250</td>
+</tr>
+<tr class="odd">
+<td align="left">Omar</td>
+<td align="left">Danny Salazar</td>
+<td align="left">P3</td>
+<td align="left">steamer</td>
+<td align="right">169</td>
+<td align="right">12</td>
+<td align="right">0</td>
+<td align="right">178</td>
+<td align="right">3.760</td>
+<td align="right">1.260</td>
+</tr>
+<tr class="even">
+<td align="left">Omar</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">1300</td>
+<td align="right">80</td>
+<td align="right">37</td>
+<td align="right">1217</td>
+<td align="right">3.656</td>
+<td align="right">1.252</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ip</th>
+<th align="right">w</th>
+<th align="right">sv</th>
+<th align="right">k</th>
+<th align="right">era</th>
+<th align="right">whip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Saud</td>
+<td align="left">Johnny Cueto</td>
+<td align="left">SP1</td>
+<td align="left">steamer</td>
+<td align="right">209</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">172</td>
+<td align="right">3.440</td>
+<td align="right">1.210</td>
+</tr>
+<tr class="even">
+<td align="left">Saud</td>
+<td align="left">Jacob deGrom</td>
+<td align="left">SP2</td>
+<td align="left">steamer</td>
+<td align="right">180</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">177</td>
+<td align="right">3.570</td>
+<td align="right">1.200</td>
+</tr>
+<tr class="odd">
+<td align="left">Saud</td>
+<td align="left">Kenta Maeda</td>
+<td align="left">SP3</td>
+<td align="left">steamer</td>
+<td align="right">148</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">139</td>
+<td align="right">3.700</td>
+<td align="right">1.200</td>
+</tr>
+<tr class="even">
+<td align="left">Saud</td>
+<td align="left">Wade Davis</td>
+<td align="left">RP1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">37</td>
+<td align="right">77</td>
+<td align="right">2.890</td>
+<td align="right">1.140</td>
+</tr>
+<tr class="odd">
+<td align="left">Saud</td>
+<td align="left">Xavier Cedeno</td>
+<td align="left">RP2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">12</td>
+<td align="right">62</td>
+<td align="right">3.390</td>
+<td align="right">1.260</td>
+</tr>
+<tr class="even">
+<td align="left">Saud</td>
+<td align="left">Zack Greinke</td>
+<td align="left">P1</td>
+<td align="left">steamer</td>
+<td align="right">186</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">159</td>
+<td align="right">3.830</td>
+<td align="right">1.250</td>
+</tr>
+<tr class="odd">
+<td align="left">Saud</td>
+<td align="left">Jharel Cotton</td>
+<td align="left">P2</td>
+<td align="left">steamer</td>
+<td align="right">148</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">140</td>
+<td align="right">4.160</td>
+<td align="right">1.320</td>
+</tr>
+<tr class="even">
+<td align="left">Saud</td>
+<td align="left">Jerad Eickhoff</td>
+<td align="left">P3</td>
+<td align="left">steamer</td>
+<td align="right">152</td>
+<td align="right">8</td>
+<td align="right">0</td>
+<td align="right">133</td>
+<td align="right">4.270</td>
+<td align="right">1.280</td>
+</tr>
+<tr class="odd">
+<td align="left">Saud</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">1153</td>
+<td align="right">69</td>
+<td align="right">49</td>
+<td align="right">1059</td>
+<td align="right">3.725</td>
+<td align="right">1.236</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ip</th>
+<th align="right">w</th>
+<th align="right">sv</th>
+<th align="right">k</th>
+<th align="right">era</th>
+<th align="right">whip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Carter</td>
+<td align="left">Justin Verlander</td>
+<td align="left">SP1</td>
+<td align="left">steamer</td>
+<td align="right">208</td>
+<td align="right">14</td>
+<td align="right">0</td>
+<td align="right">213</td>
+<td align="right">3.650</td>
+<td align="right">1.180</td>
+</tr>
+<tr class="even">
+<td align="left">Carter</td>
+<td align="left">Cole Hamels</td>
+<td align="left">SP2</td>
+<td align="left">steamer</td>
+<td align="right">204</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">186</td>
+<td align="right">4.070</td>
+<td align="right">1.320</td>
+</tr>
+<tr class="odd">
+<td align="left">Carter</td>
+<td align="left">Lance McCullers</td>
+<td align="left">SP3</td>
+<td align="left">steamer</td>
+<td align="right">148</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">163</td>
+<td align="right">3.570</td>
+<td align="right">1.310</td>
+</tr>
+<tr class="even">
+<td align="left">Carter</td>
+<td align="left">Ken Giles</td>
+<td align="left">RP1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">27</td>
+<td align="right">85</td>
+<td align="right">2.980</td>
+<td align="right">1.130</td>
+</tr>
+<tr class="odd">
+<td align="left">Carter</td>
+<td align="left">Cam Bedrosian</td>
+<td align="left">RP2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">33</td>
+<td align="right">73</td>
+<td align="right">3.260</td>
+<td align="right">1.250</td>
+</tr>
+<tr class="even">
+<td align="left">Carter</td>
+<td align="left">Koji Uehara</td>
+<td align="left">RP3</td>
+<td align="left">steamer</td>
+<td align="right">55</td>
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">63</td>
+<td align="right">3.250</td>
+<td align="right">1.070</td>
+</tr>
+<tr class="odd">
+<td align="left">Carter</td>
+<td align="left">Jake Odorizzi</td>
+<td align="left">P1</td>
+<td align="left">steamer</td>
+<td align="right">162</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">146</td>
+<td align="right">4.100</td>
+<td align="right">1.260</td>
+</tr>
+<tr class="even">
+<td align="left">Carter</td>
+<td align="left">Matt Moore</td>
+<td align="left">P2</td>
+<td align="left">steamer</td>
+<td align="right">178</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">171</td>
+<td align="right">3.670</td>
+<td align="right">1.270</td>
+</tr>
+<tr class="odd">
+<td align="left">Carter</td>
+<td align="left">Ian Kennedy</td>
+<td align="left">P3</td>
+<td align="left">steamer</td>
+<td align="right">184</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">169</td>
+<td align="right">4.340</td>
+<td align="right">1.290</td>
+</tr>
+<tr class="even">
+<td align="left">Carter</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">1269</td>
+<td align="right">77</td>
+<td align="right">62</td>
+<td align="right">1269</td>
+<td align="right">3.797</td>
+<td align="right">1.253</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ip</th>
+<th align="right">w</th>
+<th align="right">sv</th>
+<th align="right">k</th>
+<th align="right">era</th>
+<th align="right">whip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Mintz</td>
+<td align="left">Noah Syndergaard</td>
+<td align="left">SP1</td>
+<td align="left">steamer</td>
+<td align="right">199</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">234</td>
+<td align="right">3.100</td>
+<td align="right">1.100</td>
+</tr>
+<tr class="even">
+<td align="left">Mintz</td>
+<td align="left">Corey Kluber</td>
+<td align="left">SP2</td>
+<td align="left">steamer</td>
+<td align="right">211</td>
+<td align="right">14</td>
+<td align="right">0</td>
+<td align="right">221</td>
+<td align="right">3.420</td>
+<td align="right">1.150</td>
+</tr>
+<tr class="odd">
+<td align="left">Mintz</td>
+<td align="left">Felix Hernandez</td>
+<td align="left">SP3</td>
+<td align="left">steamer</td>
+<td align="right">203</td>
+<td align="right">12</td>
+<td align="right">0</td>
+<td align="right">170</td>
+<td align="right">3.910</td>
+<td align="right">1.320</td>
+</tr>
+<tr class="even">
+<td align="left">Mintz</td>
+<td align="left">Jeurys Familia</td>
+<td align="left">RP1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">38</td>
+<td align="right">70</td>
+<td align="right">3.170</td>
+<td align="right">1.260</td>
+</tr>
+<tr class="odd">
+<td align="left">Mintz</td>
+<td align="left">Shawn Kelley</td>
+<td align="left">RP2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">14</td>
+<td align="right">78</td>
+<td align="right">3.220</td>
+<td align="right">1.150</td>
+</tr>
+<tr class="even">
+<td align="left">Mintz</td>
+<td align="left">David Robertson</td>
+<td align="left">RP3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">32</td>
+<td align="right">75</td>
+<td align="right">3.570</td>
+<td align="right">1.240</td>
+</tr>
+<tr class="odd">
+<td align="left">Mintz</td>
+<td align="left">Steven Matz</td>
+<td align="left">P1</td>
+<td align="left">steamer</td>
+<td align="right">132</td>
+<td align="right">8</td>
+<td align="right">0</td>
+<td align="right">130</td>
+<td align="right">3.550</td>
+<td align="right">1.230</td>
+</tr>
+<tr class="even">
+<td align="left">Mintz</td>
+<td align="left">Gio Gonzalez</td>
+<td align="left">P2</td>
+<td align="left">steamer</td>
+<td align="right">165</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">153</td>
+<td align="right">3.740</td>
+<td align="right">1.320</td>
+</tr>
+<tr class="odd">
+<td align="left">Mintz</td>
+<td align="left">James Paxton</td>
+<td align="left">P3</td>
+<td align="left">steamer</td>
+<td align="right">171</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">158</td>
+<td align="right">3.530</td>
+<td align="right">1.240</td>
+</tr>
+<tr class="even">
+<td align="left">Mintz</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">1276</td>
+<td align="right">79</td>
+<td align="right">84</td>
+<td align="right">1289</td>
+<td align="right">3.502</td>
+<td align="right">1.222</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ip</th>
+<th align="right">w</th>
+<th align="right">sv</th>
+<th align="right">k</th>
+<th align="right">era</th>
+<th align="right">whip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bench</td>
+<td align="left">Stephen Strasburg</td>
+<td align="left">SP1</td>
+<td align="left">steamer</td>
+<td align="right">177</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">206</td>
+<td align="right">3.290</td>
+<td align="right">1.130</td>
+</tr>
+<tr class="even">
+<td align="left">Bench</td>
+<td align="left">Carlos Carrasco</td>
+<td align="left">SP2</td>
+<td align="left">steamer</td>
+<td align="right">186</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">189</td>
+<td align="right">3.370</td>
+<td align="right">1.170</td>
+</tr>
+<tr class="odd">
+<td align="left">Bench</td>
+<td align="left">Michael Pineda</td>
+<td align="left">SP3</td>
+<td align="left">steamer</td>
+<td align="right">152</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">158</td>
+<td align="right">3.520</td>
+<td align="right">1.160</td>
+</tr>
+<tr class="even">
+<td align="left">Bench</td>
+<td align="left">Craig Kimbrel</td>
+<td align="left">RP1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">35</td>
+<td align="right">87</td>
+<td align="right">3.060</td>
+<td align="right">1.170</td>
+</tr>
+<tr class="odd">
+<td align="left">Bench</td>
+<td align="left">Sam Dyson</td>
+<td align="left">RP2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">34</td>
+<td align="right">56</td>
+<td align="right">3.630</td>
+<td align="right">1.350</td>
+</tr>
+<tr class="even">
+<td align="left">Bench</td>
+<td align="left">Brandon Kintzler</td>
+<td align="left">RP3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">17</td>
+<td align="right">45</td>
+<td align="right">4.030</td>
+<td align="right">1.380</td>
+</tr>
+<tr class="odd">
+<td align="left">Bench</td>
+<td align="left">Kevin Gausman</td>
+<td align="left">P1</td>
+<td align="left">steamer</td>
+<td align="right">178</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">166</td>
+<td align="right">4.070</td>
+<td align="right">1.270</td>
+</tr>
+<tr class="even">
+<td align="left">Bench</td>
+<td align="left">Carlos Martinez</td>
+<td align="left">P2</td>
+<td align="left">steamer</td>
+<td align="right">199</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">190</td>
+<td align="right">3.590</td>
+<td align="right">1.310</td>
+</tr>
+<tr class="odd">
+<td align="left">Bench</td>
+<td align="left">Michael Fulmer</td>
+<td align="left">P3</td>
+<td align="left">steamer</td>
+<td align="right">175</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">150</td>
+<td align="right">4.020</td>
+<td align="right">1.300</td>
+</tr>
+<tr class="even">
+<td align="left">Bench</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">1262</td>
+<td align="right">82</td>
+<td align="right">86</td>
+<td align="right">1247</td>
+<td align="right">3.632</td>
+<td align="right">1.237</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ip</th>
+<th align="right">w</th>
+<th align="right">sv</th>
+<th align="right">k</th>
+<th align="right">era</th>
+<th align="right">whip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Whet</td>
+<td align="left">Madison Bumgarner</td>
+<td align="left">SP1</td>
+<td align="left">steamer</td>
+<td align="right">209</td>
+<td align="right">14</td>
+<td align="right">0</td>
+<td align="right">219</td>
+<td align="right">3.200</td>
+<td align="right">1.120</td>
+</tr>
+<tr class="even">
+<td align="left">Whet</td>
+<td align="left">Julio Teheran</td>
+<td align="left">SP2</td>
+<td align="left">steamer</td>
+<td align="right">183</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">167</td>
+<td align="right">4.100</td>
+<td align="right">1.270</td>
+</tr>
+<tr class="odd">
+<td align="left">Whet</td>
+<td align="left">Jameson Taillon</td>
+<td align="left">SP3</td>
+<td align="left">steamer</td>
+<td align="right">175</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">155</td>
+<td align="right">3.600</td>
+<td align="right">1.210</td>
+</tr>
+<tr class="even">
+<td align="left">Whet</td>
+<td align="left">Kenley Jansen</td>
+<td align="left">RP1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">39</td>
+<td align="right">92</td>
+<td align="right">2.590</td>
+<td align="right">0.950</td>
+</tr>
+<tr class="odd">
+<td align="left">Whet</td>
+<td align="left">Kelvin Herrera</td>
+<td align="left">RP2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">33</td>
+<td align="right">70</td>
+<td align="right">3.190</td>
+<td align="right">1.180</td>
+</tr>
+<tr class="even">
+<td align="left">Whet</td>
+<td align="left">Sean Doolittle</td>
+<td align="left">RP3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">11</td>
+<td align="right">75</td>
+<td align="right">3.310</td>
+<td align="right">1.120</td>
+</tr>
+<tr class="odd">
+<td align="left">Whet</td>
+<td align="left">Gerrit Cole</td>
+<td align="left">P1</td>
+<td align="left">steamer</td>
+<td align="right">189</td>
+<td align="right">12</td>
+<td align="right">0</td>
+<td align="right">174</td>
+<td align="right">3.700</td>
+<td align="right">1.250</td>
+</tr>
+<tr class="even">
+<td align="left">Whet</td>
+<td align="left">Arodys Vizcaino</td>
+<td align="left">P2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">24</td>
+<td align="right">76</td>
+<td align="right">3.420</td>
+<td align="right">1.300</td>
+</tr>
+<tr class="odd">
+<td align="left">Whet</td>
+<td align="left">Collin McHugh</td>
+<td align="left">P3</td>
+<td align="left">steamer</td>
+<td align="right">162</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">141</td>
+<td align="right">4.150</td>
+<td align="right">1.270</td>
+</tr>
+<tr class="even">
+<td align="left">Whet</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">1178</td>
+<td align="right">70</td>
+<td align="right">107</td>
+<td align="right">1169</td>
+<td align="right">3.594</td>
+<td align="right">1.202</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ip</th>
+<th align="right">w</th>
+<th align="right">sv</th>
+<th align="right">k</th>
+<th align="right">era</th>
+<th align="right">whip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Eric</td>
+<td align="left">Max Scherzer</td>
+<td align="left">SP1</td>
+<td align="left">steamer</td>
+<td align="right">203</td>
+<td align="right">15</td>
+<td align="right">0</td>
+<td align="right">245</td>
+<td align="right">3.180</td>
+<td align="right">1.060</td>
+</tr>
+<tr class="even">
+<td align="left">Eric</td>
+<td align="left">Matt Harvey</td>
+<td align="left">SP2</td>
+<td align="left">steamer</td>
+<td align="right">144</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">132</td>
+<td align="right">3.750</td>
+<td align="right">1.220</td>
+</tr>
+<tr class="odd">
+<td align="left">Eric</td>
+<td align="left">Rich Hill</td>
+<td align="left">SP3</td>
+<td align="left">steamer</td>
+<td align="right">145</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">155</td>
+<td align="right">3.350</td>
+<td align="right">1.220</td>
+</tr>
+<tr class="even">
+<td align="left">Eric</td>
+<td align="left">Edwin Diaz</td>
+<td align="left">RP1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">35</td>
+<td align="right">80</td>
+<td align="right">2.820</td>
+<td align="right">1.080</td>
+</tr>
+<tr class="odd">
+<td align="left">Eric</td>
+<td align="left">Raisel Iglesias</td>
+<td align="left">RP2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">33</td>
+<td align="right">72</td>
+<td align="right">3.430</td>
+<td align="right">1.170</td>
+</tr>
+<tr class="even">
+<td align="left">Eric</td>
+<td align="left">Grant Dayton</td>
+<td align="left">RP3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">82</td>
+<td align="right">2.950</td>
+<td align="right">1.100</td>
+</tr>
+<tr class="odd">
+<td align="left">Eric</td>
+<td align="left">Masahiro Tanaka</td>
+<td align="left">P1</td>
+<td align="left">steamer</td>
+<td align="right">205</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">174</td>
+<td align="right">3.910</td>
+<td align="right">1.220</td>
+</tr>
+<tr class="even">
+<td align="left">Eric</td>
+<td align="left">Blake Treinen</td>
+<td align="left">P2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">23</td>
+<td align="right">64</td>
+<td align="right">3.350</td>
+<td align="right">1.330</td>
+</tr>
+<tr class="odd">
+<td align="left">Eric</td>
+<td align="left">Matt Bush</td>
+<td align="left">P3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">68</td>
+<td align="right">3.520</td>
+<td align="right">1.220</td>
+</tr>
+<tr class="even">
+<td align="left">Eric</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">1022</td>
+<td align="right">64</td>
+<td align="right">93</td>
+<td align="right">1072</td>
+<td align="right">3.442</td>
+<td align="right">1.175</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ip</th>
+<th align="right">w</th>
+<th align="right">sv</th>
+<th align="right">k</th>
+<th align="right">era</th>
+<th align="right">whip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">PTB</td>
+<td align="left">Yu Darvish</td>
+<td align="left">SP1</td>
+<td align="left">steamer</td>
+<td align="right">195</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">228</td>
+<td align="right">3.580</td>
+<td align="right">1.180</td>
+</tr>
+<tr class="even">
+<td align="left">PTB</td>
+<td align="left">Tyler Skaggs</td>
+<td align="left">SP2</td>
+<td align="left">steamer</td>
+<td align="right">136</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">134</td>
+<td align="right">3.570</td>
+<td align="right">1.240</td>
+</tr>
+<tr class="odd">
+<td align="left">PTB</td>
+<td align="left">Sean Manaea</td>
+<td align="left">SP3</td>
+<td align="left">steamer</td>
+<td align="right">162</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">141</td>
+<td align="right">4.160</td>
+<td align="right">1.350</td>
+</tr>
+<tr class="even">
+<td align="left">PTB</td>
+<td align="left">Zach Britton</td>
+<td align="left">RP1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">4</td>
+<td align="right">33</td>
+<td align="right">74</td>
+<td align="right">2.510</td>
+<td align="right">1.160</td>
+</tr>
+<tr class="odd">
+<td align="left">PTB</td>
+<td align="left">Alex Colome</td>
+<td align="left">RP2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">27</td>
+<td align="right">66</td>
+<td align="right">3.330</td>
+<td align="right">1.190</td>
+</tr>
+<tr class="even">
+<td align="left">PTB</td>
+<td align="left">Nate Jones</td>
+<td align="left">RP3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">74</td>
+<td align="right">3.280</td>
+<td align="right">1.190</td>
+</tr>
+<tr class="odd">
+<td align="left">PTB</td>
+<td align="left">Addison Reed</td>
+<td align="left">P1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">69</td>
+<td align="right">3.610</td>
+<td align="right">1.200</td>
+</tr>
+<tr class="even">
+<td align="left">PTB</td>
+<td align="left">Matthew Strahm</td>
+<td align="left">P2</td>
+<td align="left">steamer</td>
+<td align="right">55</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">58</td>
+<td align="right">3.330</td>
+<td align="right">1.220</td>
+</tr>
+<tr class="odd">
+<td align="left">PTB</td>
+<td align="left">Matt Strahm</td>
+<td align="left">P3</td>
+<td align="left">steamer</td>
+<td align="right">55</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">58</td>
+<td align="right">3.330</td>
+<td align="right">1.220</td>
+</tr>
+<tr class="even">
+<td align="left">PTB</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">863</td>
+<td align="right">50</td>
+<td align="right">66</td>
+<td align="right">902</td>
+<td align="right">3.536</td>
+<td align="right">1.228</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">owner</th>
+<th align="left">player</th>
+<th align="left">pos</th>
+<th align="left">system</th>
+<th align="right">ip</th>
+<th align="right">w</th>
+<th align="right">sv</th>
+<th align="right">k</th>
+<th align="right">era</th>
+<th align="right">whip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">MCard</td>
+<td align="left">Jon Gray</td>
+<td align="left">SP1</td>
+<td align="left">steamer</td>
+<td align="right">184</td>
+<td align="right">12</td>
+<td align="right">0</td>
+<td align="right">188</td>
+<td align="right">4.170</td>
+<td align="right">1.330</td>
+</tr>
+<tr class="even">
+<td align="left">MCard</td>
+<td align="left">Aaron Nola</td>
+<td align="left">SP2</td>
+<td align="left">steamer</td>
+<td align="right">166</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">157</td>
+<td align="right">3.660</td>
+<td align="right">1.230</td>
+</tr>
+<tr class="odd">
+<td align="left">MCard</td>
+<td align="left">Joe Ross</td>
+<td align="left">SP3</td>
+<td align="left">steamer</td>
+<td align="right">146</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">128</td>
+<td align="right">3.990</td>
+<td align="right">1.290</td>
+</tr>
+<tr class="even">
+<td align="left">MCard</td>
+<td align="left">Greg Holland</td>
+<td align="left">RP1</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">17</td>
+<td align="right">74</td>
+<td align="right">3.520</td>
+<td align="right">1.280</td>
+</tr>
+<tr class="odd">
+<td align="left">MCard</td>
+<td align="left">Adam Ottavino</td>
+<td align="left">RP2</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">12</td>
+<td align="right">71</td>
+<td align="right">3.630</td>
+<td align="right">1.260</td>
+</tr>
+<tr class="even">
+<td align="left">MCard</td>
+<td align="left">Daniel Hudson</td>
+<td align="left">RP3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">62</td>
+<td align="right">3.760</td>
+<td align="right">1.300</td>
+</tr>
+<tr class="odd">
+<td align="left">MCard</td>
+<td align="left">Danny Duffy</td>
+<td align="left">P1</td>
+<td align="left">steamer</td>
+<td align="right">187</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">173</td>
+<td align="right">3.880</td>
+<td align="right">1.250</td>
+</tr>
+<tr class="even">
+<td align="left">MCard</td>
+<td align="left">Carlos Rodon</td>
+<td align="left">P2</td>
+<td align="left">steamer</td>
+<td align="right">143</td>
+<td align="right">8</td>
+<td align="right">0</td>
+<td align="right">146</td>
+<td align="right">3.960</td>
+<td align="right">1.320</td>
+</tr>
+<tr class="odd">
+<td align="left">MCard</td>
+<td align="left">Andrew Bailey</td>
+<td align="left">P3</td>
+<td align="left">steamer</td>
+<td align="right">65</td>
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">60</td>
+<td align="right">4.000</td>
+<td align="right">1.300</td>
+</tr>
+<tr class="even">
+<td align="left">MCard</td>
+<td align="left">total</td>
+<td align="left"></td>
+<td align="left">steamer</td>
+<td align="right">1086</td>
+<td align="right">63</td>
+<td align="right">33</td>
+<td align="right">1059</td>
+<td align="right">3.884</td>
+<td align="right">1.283</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>active_h_scored &lt;- active_h %&gt;%
+  dplyr::group_by(owner) %&gt;%
+  h_sum_pipe()</code></pre>
 </div>
 
 
