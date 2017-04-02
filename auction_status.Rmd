@@ -73,6 +73,9 @@ manual_adjuster <- function(df, this_mlbid, position) {
 #czap is playing Ian Desmond at 1B
 h_df <- manual_adjuster(active_pp$h_final, 435622, '1B')
 
+#eric is playing Jose Ramirez at 
+h_df <- manual_adjuster(h_df, 608070, '2B')
+
 active_pp$h_final <- h_df
 
 ```
@@ -194,24 +197,6 @@ best_teams <- dplyr::bind_rows(best_list)
 head(best_teams) %>% print.AsIs()
 
 ```
-
-this_team[8:14] %>%
-    dplyr::mutate_each(
-      sum(i)
-    )
-  
-  
-    mutate_each(
-    this_team, 
-    funs(
-      cat(.$names())
-      #ifelse(name(.) %in% )
-      #sum(is.na(.))
-    ), 
-    C:Util
-  )
-
-mutate_each(mtcars, funs(log(1 + .)), mpg:wt)
 
 
 

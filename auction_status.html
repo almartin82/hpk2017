@@ -157,11 +157,37 @@ auction_result &lt;- auction_url %&gt;%
 guru &lt;- get_guru(2017) %&gt;% proj_prep()
 
 pecota &lt;- get_pecota(file.path('..', 'projprep', 'paid_projections', 'pecota_2017.xls')) %&gt;% proj_prep()</code></pre>
+</div>
+<div id="customize-positions" class="section level2">
+<h2>customize positions</h2>
+<p>manual position adjustments here</p>
+<pre class="r"><code>#set the active projection system
+active_pp &lt;- steamer
+
+#MANUAL POSITION ELIGIBILITY ADJUSTMENTS!
+manual_adjuster &lt;- function(df, this_mlbid, position) {
+  this_pos &lt;- df[df$mlbid == this_mlbid, ]$position %&gt;%
+    strsplit(', ', fixed = TRUE) %&gt;% unlist()
+  
+  if (!position %in% this_pos) {
+    new_pos &lt;- c(this_pos, position) %&gt;% unique()
+    new_pos &lt;- paste(new_pos, collapse = ', ')
+    df[df$mlbid == this_mlbid, 'position'] = new_pos
+  }
+  
+  df
+}
+
+#czap is playing Ian Desmond at 1B
+h_df &lt;- manual_adjuster(active_pp$h_final, 435622, '1B')
+
+#eric is playing Jose Ramirez at 
+h_df &lt;- manual_adjuster(h_df, 608070, '2B')
+
+active_pp$h_final &lt;- h_df</code></pre>
+<p>tag hit / pitch</p>
 <pre class="r"><code>#load in the id map
 data('id_map', package = 'projprep')
-
-#set the active projection system
-active_pp &lt;- steamer
 
 #tag pitcher / hitter
 auction_tag &lt;- auction_result %&gt;%
@@ -172,14 +198,248 @@ auction_tag &lt;- auction_result %&gt;%
   )</code></pre>
 <pre><code>## Joining, by = &quot;mlbid&quot;</code></pre>
 <pre class="r"><code>auction_h &lt;- auction_tag %&gt;% dplyr::filter(pos == 'h')
-auction_p &lt;- auction_tag %&gt;% dplyr::filter(pos == 'p')
+auction_p &lt;- auction_tag %&gt;% dplyr::filter(pos == 'p')</code></pre>
+</div>
+<div id="figure-out-where-each-guy-starts" class="section level2">
+<h2>figure out where each guy starts</h2>
+<pre class="r"><code>new_cols &lt;- c('mlbid', 'projection_name', 'value', 'position')
 
-#who starts where?
-roster_h_pos &lt;- c('C', '1B', '2B', 'SS', '3B', 'OF', 'OF', 'OF', 'Util')
+#add value and positions
+auction_h &lt;- auction_h %&gt;% dplyr::inner_join(active_pp$h_final[, new_cols])</code></pre>
+<pre><code>## Joining, by = &quot;mlbid&quot;</code></pre>
+<pre class="r"><code>auction_p &lt;- auction_p %&gt;% dplyr::inner_join(active_pp$p_final[, new_cols])</code></pre>
+<pre><code>## Joining, by = &quot;mlbid&quot;</code></pre>
+<pre class="r"><code>#who starts where?
+roster_h_pos &lt;- c('C', 'SS', '3B', '2B', 'OF1', 'OF2', 'OF3', '1B', 'Util')
+roster_p_pos &lt;- c('RP1', 'RP2', 'RP3', 'SP1', 'SP2', 'SP3', 'P1', 'P2', 'P3')
 
+for(i in roster_h_pos)
+    auction_h[,i] &lt;- NA
 
-# for(i in namevector)
-#     df[,i] &lt;- NA</code></pre>
+for(i in roster_p_pos)
+    auction_p[,i] &lt;- NA</code></pre>
+<div id="hitters" class="section level3">
+<h3>hitters</h3>
+<p>loop over each team and determine eligibility</p>
+<pre class="r"><code>unq_owners &lt;- auction_h$owner %&gt;% unique()
+
+elig_list &lt;- list()
+
+for (i in unq_owners) {
+  print(i)
+  this_team &lt;- auction_h %&gt;% dplyr::filter(owner == i)
+  
+  #loop over h_pos
+  for (j in roster_h_pos) {
+    clean_j &lt;- gsub(&quot;\\d*$&quot;, &quot;&quot;, j)
+    print(clean_j)
+    
+    position_list &lt;- lapply(this_team$position, function(x) strsplit(x, split = ', '))
+    this_team[, j] &lt;- lapply(position_list, function(x) grepl(clean_j, x)) %&gt;% unlist()
+    
+    this_team[, 'Util'] &lt;- TRUE
+    
+  }
+  
+  elig_list[[i]] &lt;- this_team
+}</code></pre>
+<pre><code>## [1] &quot;MCard&quot;
+## [1] &quot;C&quot;
+## [1] &quot;SS&quot;
+## [1] &quot;3B&quot;
+## [1] &quot;2B&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;1B&quot;
+## [1] &quot;Util&quot;
+## [1] &quot;Moacir&quot;
+## [1] &quot;C&quot;
+## [1] &quot;SS&quot;
+## [1] &quot;3B&quot;
+## [1] &quot;2B&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;1B&quot;
+## [1] &quot;Util&quot;
+## [1] &quot;Bench&quot;
+## [1] &quot;C&quot;
+## [1] &quot;SS&quot;
+## [1] &quot;3B&quot;
+## [1] &quot;2B&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;1B&quot;
+## [1] &quot;Util&quot;
+## [1] &quot;ALM&quot;
+## [1] &quot;C&quot;
+## [1] &quot;SS&quot;
+## [1] &quot;3B&quot;
+## [1] &quot;2B&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;1B&quot;
+## [1] &quot;Util&quot;
+## [1] &quot;Czap&quot;
+## [1] &quot;C&quot;
+## [1] &quot;SS&quot;
+## [1] &quot;3B&quot;
+## [1] &quot;2B&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;1B&quot;
+## [1] &quot;Util&quot;
+## [1] &quot;Whet&quot;
+## [1] &quot;C&quot;
+## [1] &quot;SS&quot;
+## [1] &quot;3B&quot;
+## [1] &quot;2B&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;1B&quot;
+## [1] &quot;Util&quot;
+## [1] &quot;PTB&quot;
+## [1] &quot;C&quot;
+## [1] &quot;SS&quot;
+## [1] &quot;3B&quot;
+## [1] &quot;2B&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;1B&quot;
+## [1] &quot;Util&quot;
+## [1] &quot;Omar&quot;
+## [1] &quot;C&quot;
+## [1] &quot;SS&quot;
+## [1] &quot;3B&quot;
+## [1] &quot;2B&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;1B&quot;
+## [1] &quot;Util&quot;
+## [1] &quot;Carter&quot;
+## [1] &quot;C&quot;
+## [1] &quot;SS&quot;
+## [1] &quot;3B&quot;
+## [1] &quot;2B&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;1B&quot;
+## [1] &quot;Util&quot;
+## [1] &quot;Saud&quot;
+## [1] &quot;C&quot;
+## [1] &quot;SS&quot;
+## [1] &quot;3B&quot;
+## [1] &quot;2B&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;1B&quot;
+## [1] &quot;Util&quot;
+## [1] &quot;Eric&quot;
+## [1] &quot;C&quot;
+## [1] &quot;SS&quot;
+## [1] &quot;3B&quot;
+## [1] &quot;2B&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;1B&quot;
+## [1] &quot;Util&quot;
+## [1] &quot;Mintz&quot;
+## [1] &quot;C&quot;
+## [1] &quot;SS&quot;
+## [1] &quot;3B&quot;
+## [1] &quot;2B&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;OF&quot;
+## [1] &quot;1B&quot;
+## [1] &quot;Util&quot;</code></pre>
+<pre class="r"><code>elig_teams &lt;- dplyr::bind_rows(elig_list)
+
+head(elig_teams) %&gt;% print.AsIs()</code></pre>
+<pre><code>##    mlbid               name price owner pos projection_name value position
+## 1 134181      Adrian Beltre    24 MCard   h         steamer   7.6       3B
+## 2 408234     Miguel Cabrera    57 MCard   h         steamer  40.0       1B
+## 3 451594      Dexter Fowler    14 MCard   h         steamer   8.1       OF
+## 4 456030     Dustin Pedroia     5 MCard   h         steamer  12.1       2B
+## 5 456078 Welington Castillo     1 MCard   h         steamer -55.7        C
+## 6 456488      Eduardo Nunez     4 MCard   h         steamer -15.9   SS, 3B
+##       C    SS    3B    2B   OF1   OF2   OF3    1B Util
+## 1 FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE TRUE
+## 2 FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE TRUE
+## 3 FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE TRUE
+## 4 FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE TRUE
+## 5  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE TRUE
+## 6 FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE TRUE</code></pre>
+<p>loop over each team and given eligibility, pick the best eligible guy</p>
+<pre class="r"><code>best_list &lt;- list()
+
+for (i in unq_owners) {
+  print(i)
+  this_team &lt;- elig_teams %&gt;% dplyr::filter(owner == i)
+  this_team$starting_pos &lt;- NA
+  
+  #loop over h_pos
+  for (j in roster_h_pos) {
+  #for (j in c('C', 'SS', '3B', '2B', 'OF1', 'OF2')) {
+
+    #build a logical vector of: is this player eligible at this position, AND are they
+    #still unassigned as a starter
+    this_team$mask &lt;- unlist(this_team[, j]) &amp; is.na(this_team$starting_pos)
+    
+    #rank inside that subset and record
+    position_ranked &lt;- rank(-this_team[this_team$mask, ]$value, ties.method = 'first')
+    #I THINK I CAUGHT A DPLYR BUG!
+    this_team[, j] = 0
+    this_team[this_team$mask, j] = position_ranked
+    
+    #pick the #1 guy and mark his starting position
+    this_team[this_team[, j] == 1, 'starting_pos'] = j
+    
+    this_team &lt;- this_team %&gt;% dplyr::select(-mask)
+  }
+    
+  best_list[[i]] &lt;- this_team
+}</code></pre>
+<pre><code>## [1] &quot;MCard&quot;
+## [1] &quot;Moacir&quot;
+## [1] &quot;Bench&quot;
+## [1] &quot;ALM&quot;
+## [1] &quot;Czap&quot;
+## [1] &quot;Whet&quot;
+## [1] &quot;PTB&quot;
+## [1] &quot;Omar&quot;
+## [1] &quot;Carter&quot;
+## [1] &quot;Saud&quot;
+## [1] &quot;Eric&quot;
+## [1] &quot;Mintz&quot;</code></pre>
+<pre class="r"><code>best_teams &lt;- dplyr::bind_rows(best_list)
+
+head(best_teams) %&gt;% print.AsIs()</code></pre>
+<pre><code>##    mlbid               name price owner pos projection_name value position
+## 1 134181      Adrian Beltre    24 MCard   h         steamer   7.6       3B
+## 2 408234     Miguel Cabrera    57 MCard   h         steamer  40.0       1B
+## 3 451594      Dexter Fowler    14 MCard   h         steamer   8.1       OF
+## 4 456030     Dustin Pedroia     5 MCard   h         steamer  12.1       2B
+## 5 456078 Welington Castillo     1 MCard   h         steamer -55.7        C
+## 6 456488      Eduardo Nunez     4 MCard   h         steamer -15.9   SS, 3B
+##   C SS 3B 2B OF1 OF2 OF3 1B Util starting_pos
+## 1 0  0  2  0   0   0   0  0    2         &lt;NA&gt;
+## 2 0  0  0  0   0   0   0  1    0           1B
+## 3 0  0  0  0   3   2   1  0    0          OF3
+## 4 0  0  0  1   0   0   0  0    0           2B
+## 5 1  0  0  0   0   0   0  0    0            C
+## 6 0  2  3  0   0   0   0  0    4         &lt;NA&gt;</code></pre>
+</div>
 </div>
 
 
