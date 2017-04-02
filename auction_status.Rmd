@@ -14,7 +14,8 @@ library(googlesheets)
 library(janitor)
 library(tidyverse)
 library(devtools)
-devtools::install_local(path = '~/Google Drive/repositories/projprep')
+devtools::install_github('almartin82/projprep')
+#devtools::install_local(path = '~/Google Drive/repositories/projprep')
 suppressPackageStartupMessages(library(projprep))
 ```
 
@@ -380,7 +381,11 @@ p_sum_pipe <- . %>%
     k = sum(k),
     era = (sum(total_r) / sum(ip)) * 9,
     whip = sum(total_wh) / sum(ip)
-  ) 
+  ) %>%
+  dplyr::mutate(
+    era = round(era, 2),
+    whip = round(whip, 3)
+  )
 
 knitr_out_p <- list()
 
@@ -422,7 +427,7 @@ for (i in knitr_out_p) {
 
 ```
 
-## fake standings
+## fake hitting standings
 
 ```{r}
 
@@ -449,5 +454,88 @@ h_standings <- active_h_scored %>%
   ) %>%
   dplyr::arrange(-total_h)
 
-h_standings
+print(active_h_scored, digits = 3)
+
+print(h_standings)
+```
+
+```{r}
+
+knitr::kable(active_h_scored, digits = 3, format = 'markdown')
+
+```
+
+```{r}
+
+knitr::kable(h_standings, format = 'markdown')
+
+```
+
+
+## fake pitching standings
+
+```{r}
+
+p_standings <- active_p_scored %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    w = rank(w, ties.method = 'min'),
+    sv = rank(sv, ties.method = 'min'),
+    k = rank(k, ties.method = 'min'),
+    era = rank(-era, ties.method = 'min'),
+    whip = rank(-whip, ties.method = 'min')
+  ) %>%
+  dplyr::rowwise() %>%
+  dplyr::mutate(
+    total_p = sum(w, sv, k, era, whip)
+  ) %>%
+  dplyr::arrange(-total_p)
+
+print(active_p_scored, digits = 2)
+
+print(p_standings)
+```
+
+```{r}
+
+knitr::kable(active_p_scored, digits = 3, format = 'markdown')
+
+```
+
+```{r}
+
+knitr::kable(p_standings, format = 'markdown')
+
+```
+
+## COMBINED FAKE STANDINGS
+
+```{r}
+
+all_team_stats <- active_h_scored %>% 
+  dplyr::left_join(active_p_scored) %>%
+  dplyr::select(-ab, -ip)
+
+print.AsIs(all_team_stats, digits = 3)
+
+all_standings <- h_standings %>%
+  dplyr::left_join(p_standings) %>%
+  dplyr::select(-ab, -ip) %>%
+  dplyr::mutate(overall = total_h + total_p) %>%
+  dplyr::arrange(-overall) 
+
+print.AsIs(all_standings)
+```
+
+
+```{r}
+
+knitr::kable(all_team_stats, digits = 3, format = 'markdown')
+
+```
+
+```{r}
+
+knitr::kable(all_standings, format = 'markdown')
+
 ```
