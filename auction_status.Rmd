@@ -1,0 +1,219 @@
+---
+title: "auction_status"
+author: "Andrew Martin"
+date: "April 2, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r warning = FALSE, echo = FALSE, message = FALSE}
+library(googlesheets)
+library(janitor)
+library(tidyverse)
+library(devtools)
+devtools::install_local(path = '~/Google Drive/repositories/projprep')
+suppressPackageStartupMessages(library(projprep))
+```
+
+## Get data from auction google sheet
+
+```{r}
+
+auction_url <- 'https://docs.google.com/spreadsheets/d/1v1k5gBTV3NoFvd4O68WdOstsF-NS22YrBvYv5sXzCIc/'
+
+auction_result <- auction_url %>%
+  googlesheets::gs_url() %>%
+  googlesheets::gs_read(ws = 'mlbids') %>%
+  janitor::clean_names() %>%
+  dplyr::filter(!is.na(price)) %>%
+  unique()
+
+head(auction_result)
+
+```
+
+## Projection system data
+
+```{r cache = TRUE, message = FALSE, results = 'hide'}
+
+steamer <- get_steamer(2017) %>% proj_prep()
+
+guru <- get_guru(2017) %>% proj_prep()
+
+pecota <- get_pecota(file.path('..', 'projprep', 'paid_projections', 'pecota_2017.xls')) %>% proj_prep()
+
+```
+
+## customize positions
+
+manual position adjustments here
+
+```{r}
+
+#set the active projection system
+active_pp <- steamer
+
+#MANUAL POSITION ELIGIBILITY ADJUSTMENTS!
+manual_adjuster <- function(df, this_mlbid, position) {
+  this_pos <- df[df$mlbid == this_mlbid, ]$position %>%
+    strsplit(', ', fixed = TRUE) %>% unlist()
+  
+  if (!position %in% this_pos) {
+    new_pos <- c(this_pos, position) %>% unique()
+    new_pos <- paste(new_pos, collapse = ', ')
+    df[df$mlbid == this_mlbid, 'position'] = new_pos
+  }
+  
+  df
+}
+
+#czap is playing Ian Desmond at 1B
+h_df <- manual_adjuster(active_pp$h_final, 435622, '1B')
+
+active_pp$h_final <- h_df
+
+```
+
+
+tag hit / pitch
+
+```{r}
+
+#load in the id map
+data('id_map', package = 'projprep')
+
+#tag pitcher / hitter
+auction_tag <- auction_result %>%
+  dplyr::left_join(id_map[, c('mlbid', 'pos')]) %>%
+  dplyr::mutate(
+    pos = ifelse(pos %in% c('SP', 'RP', 'P'), 'p', pos),
+    pos = ifelse(pos %in% c('1B', '2B', '3B', 'C', 'CF', 'DH', 'LF', 'OF', 'RF', 'SS'), 'h', pos)
+  )
+
+auction_h <- auction_tag %>% dplyr::filter(pos == 'h')
+auction_p <- auction_tag %>% dplyr::filter(pos == 'p')
+
+```
+
+## figure out where each guy starts
+
+```{r}
+
+new_cols <- c('mlbid', 'projection_name', 'value', 'position')
+
+#add value and positions
+auction_h <- auction_h %>% dplyr::inner_join(active_pp$h_final[, new_cols])
+auction_p <- auction_p %>% dplyr::inner_join(active_pp$p_final[, new_cols])
+
+
+#who starts where?
+roster_h_pos <- c('C', 'SS', '3B', '2B', 'OF1', 'OF2', 'OF3', '1B', 'Util')
+roster_p_pos <- c('RP1', 'RP2', 'RP3', 'SP1', 'SP2', 'SP3', 'P1', 'P2', 'P3')
+
+for(i in roster_h_pos)
+    auction_h[,i] <- NA
+
+for(i in roster_p_pos)
+    auction_p[,i] <- NA
+
+```
+
+### hitters
+loop over each team and determine eligibility
+
+```{r}
+
+unq_owners <- auction_h$owner %>% unique()
+
+elig_list <- list()
+
+for (i in unq_owners) {
+  print(i)
+  this_team <- auction_h %>% dplyr::filter(owner == i)
+  
+  #loop over h_pos
+  for (j in roster_h_pos) {
+    clean_j <- gsub("\\d*$", "", j)
+    print(clean_j)
+    
+    position_list <- lapply(this_team$position, function(x) strsplit(x, split = ', '))
+    this_team[, j] <- lapply(position_list, function(x) grepl(clean_j, x)) %>% unlist()
+    
+    this_team[, 'Util'] <- TRUE
+    
+  }
+  
+  elig_list[[i]] <- this_team
+}
+
+elig_teams <- dplyr::bind_rows(elig_list)
+
+head(elig_teams) %>% print.AsIs()
+
+```
+
+loop over each team and given eligibility, pick the best eligible guy
+
+```{r}
+
+best_list <- list()
+
+for (i in unq_owners) {
+  print(i)
+  this_team <- elig_teams %>% dplyr::filter(owner == i)
+  this_team$starting_pos <- NA
+  
+  #loop over h_pos
+  for (j in roster_h_pos) {
+  #for (j in c('C', 'SS', '3B', '2B', 'OF1', 'OF2')) {
+
+    #build a logical vector of: is this player eligible at this position, AND are they
+    #still unassigned as a starter
+    this_team$mask <- unlist(this_team[, j]) & is.na(this_team$starting_pos)
+    
+    #rank inside that subset and record
+    position_ranked <- rank(-this_team[this_team$mask, ]$value, ties.method = 'first')
+    #I THINK I CAUGHT A DPLYR BUG!
+    this_team[, j] = 0
+    this_team[this_team$mask, j] = position_ranked
+    
+    #pick the #1 guy and mark his starting position
+    this_team[this_team[, j] == 1, 'starting_pos'] = j
+    
+    this_team <- this_team %>% dplyr::select(-mask)
+  }
+    
+  best_list[[i]] <- this_team
+}
+
+best_teams <- dplyr::bind_rows(best_list)
+
+head(best_teams) %>% print.AsIs()
+
+```
+
+this_team[8:14] %>%
+    dplyr::mutate_each(
+      sum(i)
+    )
+  
+  
+    mutate_each(
+    this_team, 
+    funs(
+      cat(.$names())
+      #ifelse(name(.) %in% )
+      #sum(is.na(.))
+    ), 
+    C:Util
+  )
+
+mutate_each(mtcars, funs(log(1 + .)), mpg:wt)
+
+
+
+
+
