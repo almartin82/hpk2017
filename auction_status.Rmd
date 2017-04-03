@@ -547,3 +547,141 @@ knitr::kable(all_team_stats, digits = 3, format = 'markdown')
 knitr::kable(all_standings, format = 'markdown')
 
 ```
+
+
+## best draft
+
+```{r}
+
+h_surplus <- auction_h[, c('mlbid', 'name', 'price', 'owner', 'is_keeper')] %>%
+  dplyr::left_join(
+    active_pp$h_final %>%
+      dplyr::select(mlbid, projection_name, value, priority_pos)
+  ) %>%
+  dplyr::mutate(
+    value = ifelse(value < 0, 0, value),
+    surplus = value - price
+  ) %>%
+  dplyr::arrange(-surplus)
+
+h_surplus %>%
+  dplyr::filter(is_keeper == 'auctioned') %>%
+  dplyr::top_n(20) %>%
+  print.AsIs()
+
+```
+
+
+```{r}
+
+p_surplus <- auction_p[, c('mlbid', 'name', 'price', 'owner', 'is_keeper')] %>%
+  dplyr::left_join(
+    active_pp$p_final %>%
+      dplyr::select(mlbid, projection_name, value, priority_pos)
+  ) %>%
+  dplyr::mutate(
+    value = ifelse(value < 0, 0, value),
+    surplus = value - price
+  ) %>%
+  dplyr::arrange(-surplus)
+
+p_surplus %>%
+  dplyr::filter(is_keeper == 'auctioned') %>%
+  dplyr::top_n(20) %>%
+  print.AsIs()
+
+```
+
+
+```{r}
+
+all_surplus <- dplyr::bind_rows(h_surplus, p_surplus)
+
+auction_score <- all_surplus %>%
+  dplyr::filter(!priority_pos == 'C') %>%
+  dplyr::group_by(owner, projection_name, is_keeper) %>%
+  dplyr::summarize(total_surplus = sum(surplus)) %>%
+  dplyr::rename(system = projection_name)
+
+auction_score %>%
+  dplyr::filter(is_keeper == 'keeper') %>%
+  dplyr:::arrange(-total_surplus) %>%
+  print.AsIs()
+
+auction_score %>%
+  dplyr::filter(is_keeper == 'auctioned') %>%
+  dplyr:::arrange(-total_surplus) %>%
+  print.AsIs()
+```
+
+
+for Omar
+
+```{r}
+
+all_surplus %>%
+  dplyr::filter(is_keeper == 'keeper' & owner == 'Omar') %>%
+  print.AsIs()
+
+all_surplus %>%
+  dplyr::filter(is_keeper == 'auctioned' & owner == 'Omar') %>%
+  dplyr::arrange(-surplus) %>%
+  print.AsIs()
+
+```
+
+
+for Cza
+
+```{r}
+
+all_surplus %>%
+  dplyr::filter(is_keeper == 'keeper' & owner == 'Czap') %>%
+  print.AsIs()
+
+all_surplus %>%
+  dplyr::filter(is_keeper == 'auctioned' & owner == 'Czap') %>%
+  dplyr::arrange(-surplus) %>%
+  print.AsIs()
+
+```
+
+
+ALM
+
+```{r}
+
+all_surplus %>%
+  dplyr::filter(is_keeper == 'keeper' & owner == 'ALM') %>%
+  print.AsIs()
+
+all_surplus %>%
+  dplyr::filter(is_keeper == 'auctioned' & owner == 'ALM') %>%
+  dplyr::arrange(-surplus) %>%
+  print.AsIs()
+
+```
+
+Mo??
+
+```{r}
+
+all_surplus %>%
+  dplyr::filter(is_keeper == 'keeper' & owner == 'Moacir') %>%
+  print.AsIs()
+
+all_surplus %>%
+  dplyr::filter(is_keeper == 'auctioned' & owner == 'Moacir') %>%
+  dplyr::arrange(-surplus) %>%
+  print.AsIs()
+
+```
+
+```{r}
+
+active_pp$h_final %>% dplyr::filter(firstname == 'Buster') %>% print.AsIs()
+
+active_pp$h_final %>% dplyr::filter(fullname == 'Adam Jones') %>% print.AsIs()
+
+active_pp$h_final %>% dplyr::filter(fullname == 'Mike Trout') %>% print.AsIs()
+```

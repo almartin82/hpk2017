@@ -140,15 +140,15 @@ auction_result &lt;- auction_url %&gt;%
 <pre><code>## Accessing worksheet titled 'mlbids'.</code></pre>
 <pre><code>## No encoding supplied: defaulting to UTF-8.</code></pre>
 <pre class="r"><code>head(auction_result)</code></pre>
-<pre><code>## # A tibble: 6 × 4
-##    mlbid            name price  owner
-##    &lt;int&gt;           &lt;chr&gt; &lt;int&gt;  &lt;chr&gt;
-## 1 134181   Adrian Beltre    24  MCard
-## 2 400121 Victor Martinez     2  MCard
-## 3 405395   Albert Pujols     5 Moacir
-## 4 407793     John Lackey     9    ALM
-## 5 407812   Matt Holliday     1  Bench
-## 6 407845 Fernando Rodney     6 Moacir</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##    mlbid            name price  owner is_keeper
+##    &lt;int&gt;           &lt;chr&gt; &lt;int&gt;  &lt;chr&gt;     &lt;chr&gt;
+## 1 134181   Adrian Beltre    24  MCard auctioned
+## 2 400121 Victor Martinez     2  MCard    keeper
+## 3 405395   Albert Pujols     5 Moacir auctioned
+## 4 407793     John Lackey     9    ALM auctioned
+## 5 407812   Matt Holliday     1  Bench auctioned
+## 6 407845 Fernando Rodney     6 Moacir auctioned</code></pre>
 </div>
 <div id="projection-system-data" class="section level2">
 <h2>Projection system data</h2>
@@ -370,20 +370,20 @@ for (i in unq_owners) {
 <pre class="r"><code>elig_teams &lt;- dplyr::bind_rows(elig_list)
 
 head(elig_teams) %&gt;% print.AsIs()</code></pre>
-<pre><code>##    mlbid               name price owner pos projection_name value position
-## 1 134181      Adrian Beltre    24 MCard   h         steamer   7.6       3B
-## 2 408234     Miguel Cabrera    57 MCard   h         steamer  40.0       1B
-## 3 451594      Dexter Fowler    14 MCard   h         steamer   8.1       OF
-## 4 456030     Dustin Pedroia     5 MCard   h         steamer  12.1       2B
-## 5 456078 Welington Castillo     1 MCard   h         steamer -55.7        C
-## 6 456488      Eduardo Nunez     4 MCard   h         steamer -15.9   SS, 3B
-##       C    SS    3B    2B   OF1   OF2   OF3    1B Util
-## 1 FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE TRUE
-## 2 FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE TRUE
-## 3 FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE TRUE
-## 4 FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE TRUE
-## 5  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE TRUE
-## 6 FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE TRUE</code></pre>
+<pre><code>##    mlbid               name price owner is_keeper pos projection_name
+## 1 134181      Adrian Beltre    24 MCard auctioned   h         steamer
+## 2 408234     Miguel Cabrera    57 MCard    keeper   h         steamer
+## 3 451594      Dexter Fowler    14 MCard auctioned   h         steamer
+## 4 456030     Dustin Pedroia     5 MCard    keeper   h         steamer
+## 5 456078 Welington Castillo     1 MCard auctioned   h         steamer
+## 6 456488      Eduardo Nunez     4 MCard auctioned   h         steamer
+##   value position     C    SS    3B    2B   OF1   OF2   OF3    1B Util
+## 1   7.6       3B FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE TRUE
+## 2  40.0       1B FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE TRUE
+## 3   8.1       OF FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE TRUE
+## 4  12.1       2B FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE TRUE
+## 5 -55.7        C  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE TRUE
+## 6 -15.9   SS, 3B FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE TRUE</code></pre>
 <p>loop over each team and given eligibility, pick the best eligible guy</p>
 <pre class="r"><code>best_list &lt;- list()
 
@@ -429,20 +429,20 @@ for (i in unq_owners) {
 <pre class="r"><code>best_teams &lt;- dplyr::bind_rows(best_list)
 
 head(best_teams) %&gt;% print.AsIs()</code></pre>
-<pre><code>##    mlbid               name price owner pos projection_name value position
-## 1 134181      Adrian Beltre    24 MCard   h         steamer   7.6       3B
-## 2 408234     Miguel Cabrera    57 MCard   h         steamer  40.0       1B
-## 3 451594      Dexter Fowler    14 MCard   h         steamer   8.1       OF
-## 4 456030     Dustin Pedroia     5 MCard   h         steamer  12.1       2B
-## 5 456078 Welington Castillo     1 MCard   h         steamer -55.7        C
-## 6 456488      Eduardo Nunez     4 MCard   h         steamer -15.9   SS, 3B
-##   C SS 3B 2B OF1 OF2 OF3 1B Util starting_pos
-## 1 0  0  2  0   0   0   0  0    2         &lt;NA&gt;
-## 2 0  0  0  0   0   0   0  1    0           1B
-## 3 0  0  0  0   3   2   1  0    0          OF3
-## 4 0  0  0  1   0   0   0  0    0           2B
-## 5 1  0  0  0   0   0   0  0    0            C
-## 6 0  2  3  0   0   0   0  0    4         &lt;NA&gt;</code></pre>
+<pre><code>##    mlbid               name price owner is_keeper pos projection_name
+## 1 134181      Adrian Beltre    24 MCard auctioned   h         steamer
+## 2 408234     Miguel Cabrera    57 MCard    keeper   h         steamer
+## 3 451594      Dexter Fowler    14 MCard auctioned   h         steamer
+## 4 456030     Dustin Pedroia     5 MCard    keeper   h         steamer
+## 5 456078 Welington Castillo     1 MCard auctioned   h         steamer
+## 6 456488      Eduardo Nunez     4 MCard auctioned   h         steamer
+##   value position C SS 3B 2B OF1 OF2 OF3 1B Util starting_pos
+## 1   7.6       3B 0  0  2  0   0   0   0  0    2         &lt;NA&gt;
+## 2  40.0       1B 0  0  0  0   0   0   0  1    0           1B
+## 3   8.1       OF 0  0  0  0   3   2   1  0    0          OF3
+## 4  12.1       2B 0  0  0  1   0   0   0  0    0           2B
+## 5 -55.7        C 1  0  0  0   0   0   0  0    0            C
+## 6 -15.9   SS, 3B 0  2  3  0   0   0   0  0    4         &lt;NA&gt;</code></pre>
 </div>
 <div id="pitchers" class="section level3">
 <h3>pitchers</h3>
@@ -594,20 +594,20 @@ for (i in unq_owners) {
 <pre class="r"><code>elig_teams_p &lt;- dplyr::bind_rows(elig_list_p)
 
 head(elig_teams_p) %&gt;% print.AsIs()</code></pre>
-<pre><code>##    mlbid              name price owner pos projection_name value position
-## 1 407793       John Lackey     9   ALM   p         steamer   8.9       SP
-## 2 434538 Francisco Liriano     1   ALM   p         steamer  -7.1       SP
-## 3 453343     Mark Melancon    19   ALM   p         steamer  18.5       RP
-## 4 453562      Jake Arrieta    28   ALM   p         steamer   7.9       SP
-## 5 462136     Marco Estrada     1   ALM   p         steamer -15.1       SP
-## 6 493200     Seung Hwan Oh    19   ALM   p         steamer  16.1       RP
-##     RP1   RP2   RP3   SP1   SP2   SP3   P1   P2   P3
-## 1 FALSE FALSE FALSE  TRUE  TRUE  TRUE TRUE TRUE TRUE
-## 2 FALSE FALSE FALSE  TRUE  TRUE  TRUE TRUE TRUE TRUE
-## 3  TRUE  TRUE  TRUE FALSE FALSE FALSE TRUE TRUE TRUE
-## 4 FALSE FALSE FALSE  TRUE  TRUE  TRUE TRUE TRUE TRUE
-## 5 FALSE FALSE FALSE  TRUE  TRUE  TRUE TRUE TRUE TRUE
-## 6  TRUE  TRUE  TRUE FALSE FALSE FALSE TRUE TRUE TRUE</code></pre>
+<pre><code>##    mlbid              name price owner is_keeper pos projection_name value
+## 1 407793       John Lackey     9   ALM auctioned   p         steamer   8.9
+## 2 434538 Francisco Liriano     1   ALM auctioned   p         steamer  -7.1
+## 3 453343     Mark Melancon    19   ALM auctioned   p         steamer  18.5
+## 4 453562      Jake Arrieta    28   ALM auctioned   p         steamer   7.9
+## 5 462136     Marco Estrada     1   ALM auctioned   p         steamer -15.1
+## 6 493200     Seung Hwan Oh    19   ALM auctioned   p         steamer  16.1
+##   position   RP1   RP2   RP3   SP1   SP2   SP3   P1   P2   P3
+## 1       SP FALSE FALSE FALSE  TRUE  TRUE  TRUE TRUE TRUE TRUE
+## 2       SP FALSE FALSE FALSE  TRUE  TRUE  TRUE TRUE TRUE TRUE
+## 3       RP  TRUE  TRUE  TRUE FALSE FALSE FALSE TRUE TRUE TRUE
+## 4       SP FALSE FALSE FALSE  TRUE  TRUE  TRUE TRUE TRUE TRUE
+## 5       SP FALSE FALSE FALSE  TRUE  TRUE  TRUE TRUE TRUE TRUE
+## 6       RP  TRUE  TRUE  TRUE FALSE FALSE FALSE TRUE TRUE TRUE</code></pre>
 <p>loop over each team and given eligibility, pick the best eligible guy</p>
 <pre class="r"><code>best_list_p &lt;- list()
 
@@ -652,20 +652,20 @@ for (i in unq_owners) {
 <pre class="r"><code>best_teams_p &lt;- dplyr::bind_rows(best_list_p)
 
 head(best_teams_p) %&gt;% print.AsIs()</code></pre>
-<pre><code>##    mlbid              name price owner pos projection_name value position
-## 1 407793       John Lackey     9   ALM   p         steamer   8.9       SP
-## 2 434538 Francisco Liriano     1   ALM   p         steamer  -7.1       SP
-## 3 453343     Mark Melancon    19   ALM   p         steamer  18.5       RP
-## 4 453562      Jake Arrieta    28   ALM   p         steamer   7.9       SP
-## 5 462136     Marco Estrada     1   ALM   p         steamer -15.1       SP
-## 6 493200     Seung Hwan Oh    19   ALM   p         steamer  16.1       RP
-##   RP1 RP2 RP3 SP1 SP2 SP3 P1 P2 P3 starting_pos
-## 1   0   0   0   2   1   0  0  0  0          SP2
-## 2   0   0   0   5   4   3  2  1  0           P2
-## 3   2   1   0   0   0   0  0  0  0          RP2
-## 4   0   0   0   3   2   1  0  0  0          SP3
-## 5   0   0   0   7   6   5  4  3  2         &lt;NA&gt;
-## 6   3   2   1   0   0   0  0  0  0          RP3</code></pre>
+<pre><code>##    mlbid              name price owner is_keeper pos projection_name value
+## 1 407793       John Lackey     9   ALM auctioned   p         steamer   8.9
+## 2 434538 Francisco Liriano     1   ALM auctioned   p         steamer  -7.1
+## 3 453343     Mark Melancon    19   ALM auctioned   p         steamer  18.5
+## 4 453562      Jake Arrieta    28   ALM auctioned   p         steamer   7.9
+## 5 462136     Marco Estrada     1   ALM auctioned   p         steamer -15.1
+## 6 493200     Seung Hwan Oh    19   ALM auctioned   p         steamer  16.1
+##   position RP1 RP2 RP3 SP1 SP2 SP3 P1 P2 P3 starting_pos
+## 1       SP   0   0   0   2   1   0  0  0  0          SP2
+## 2       SP   0   0   0   5   4   3  2  1  0           P2
+## 3       RP   2   1   0   0   0   0  0  0  0          RP2
+## 4       SP   0   0   0   3   2   1  0  0  0          SP3
+## 5       SP   0   0   0   7   6   5  4  3  2         &lt;NA&gt;
+## 6       RP   3   2   1   0   0   0  0  0  0          RP3</code></pre>
 </div>
 </div>
 <div id="now-score" class="section level2">
@@ -5510,6 +5510,294 @@ print(active_p_scored, digits = 2)</code></pre>
 </tr>
 </tbody>
 </table>
+</div>
+<div id="best-draft" class="section level2">
+<h2>best draft</h2>
+<pre class="r"><code>h_surplus &lt;- auction_h[, c('mlbid', 'name', 'price', 'owner', 'is_keeper')] %&gt;%
+  dplyr::left_join(
+    active_pp$h_final %&gt;%
+      dplyr::select(mlbid, projection_name, value, priority_pos)
+  ) %&gt;%
+  dplyr::mutate(
+    value = ifelse(value &lt; 0, 0, value),
+    surplus = value - price
+  ) %&gt;%
+  dplyr::arrange(-surplus)</code></pre>
+<pre><code>## Joining, by = &quot;mlbid&quot;</code></pre>
+<pre class="r"><code>h_surplus %&gt;%
+  dplyr::filter(is_keeper == 'auctioned') %&gt;%
+  dplyr::top_n(20) %&gt;%
+  print.AsIs()</code></pre>
+<pre><code>## Selecting by surplus</code></pre>
+<pre><code>##     mlbid             name price  owner is_keeper projection_name value priority_pos surplus
+## 1  523253   Logan Forsythe     2   Saud auctioned         steamer  18.8           2B    16.8
+## 2  457759    Justin Turner     7   Eric auctioned         steamer  22.4           3B    15.4
+## 3  571875        Jake Lamb     4 Carter auctioned         steamer  19.2           3B    15.2
+## 4  570731  Jonathan Schoop     2  Bench auctioned         steamer  16.4           2B    14.4
+## 5  430945       Adam Jones    13   Omar auctioned         steamer  27.3           OF    14.3
+## 6  641313     Tim Anderson     2  Mintz auctioned         steamer  15.2           SS    13.2
+## 7  571830     Tommy Joseph     1    ALM auctioned         steamer  13.7           1B    12.7
+## 8  546318   Odubel Herrera     7    PTB auctioned         steamer  18.3           OF    11.3
+## 9  408236  Adrian Gonzalez     4    ALM auctioned         steamer  14.8           1B    10.8
+## 10 435622      Ian Desmond    10   Czap auctioned         steamer  19.6           SS     9.6
+## 11 593934      Miguel Sano     5  Bench auctioned         steamer  14.1           3B     9.1
+## 12 466320    Melky Cabrera     1   Omar auctioned         steamer  10.0           OF     9.0
+## 13 462101     Elvis Andrus     3  Mintz auctioned         steamer  11.8           SS     8.8
+## 14 592387       Ryon Healy     3  MCard auctioned         steamer  11.4           3B     8.4
+## 15 543063 Brandon Crawford     1   Omar auctioned         steamer   9.3           SS     8.3
+## 16 516770   Starlin Castro     2    ALM auctioned         steamer   9.6           SS     7.6
+## 17 608070     Jose Ramirez    15   Eric auctioned         steamer  22.0           3B     7.0
+## 18 518934      DJ LeMahieu    15  Mintz auctioned         steamer  21.4           2B     6.4
+## 19 435063      Mike Napoli     1 Carter auctioned         steamer   7.3           1B     6.3
+## 20 596748    Maikel Franco     3 Moacir auctioned         steamer   8.5           3B     5.5</code></pre>
+<pre class="r"><code>p_surplus &lt;- auction_p[, c('mlbid', 'name', 'price', 'owner', 'is_keeper')] %&gt;%
+  dplyr::left_join(
+    active_pp$p_final %&gt;%
+      dplyr::select(mlbid, projection_name, value, priority_pos)
+  ) %&gt;%
+  dplyr::mutate(
+    value = ifelse(value &lt; 0, 0, value),
+    surplus = value - price
+  ) %&gt;%
+  dplyr::arrange(-surplus)</code></pre>
+<pre><code>## Joining, by = &quot;mlbid&quot;</code></pre>
+<pre class="r"><code>p_surplus %&gt;%
+  dplyr::filter(is_keeper == 'auctioned') %&gt;%
+  dplyr::top_n(20) %&gt;%
+  print.AsIs()</code></pre>
+<pre><code>## Selecting by surplus</code></pre>
+<pre><code>##     mlbid             name price  owner is_keeper projection_name value priority_pos surplus
+## 1  453192    Andrew Miller    15   Czap auctioned         steamer  31.6           RP    16.6
+## 2  594795     Grant Dayton     1   Eric auctioned         steamer  10.8           RP     9.8
+## 3  445276    Kenley Jansen    25   Whet auctioned         steamer  33.8           RP     8.8
+## 4  547973  Aroldis Chapman    24    ALM auctioned         steamer  32.5           RP     8.5
+## 5  518875     Shawn Kelley     2  Mintz auctioned         steamer  10.0           RP     8.0
+## 6  493157      Koji Uehara     1 Carter auctioned         steamer   7.3           RP     6.3
+## 7  572070 Garrett Richards     2   Omar auctioned         steamer   7.8           SP     5.8
+## 8  612672     Wei-Yin Chen     1   Omar auctioned         steamer   6.2           SP     5.2
+## 9  572140     Tyler Skaggs     3    PTB auctioned         steamer   8.1           SP     5.1
+## 10 476454  Dellin Betances    15   Czap auctioned         steamer  19.5           RP     4.5
+## 11 448281   Sean Doolittle     4   Whet auctioned         steamer   8.4           RP     4.4
+## 12 628452  Raisel Iglesias     8   Eric auctioned         steamer  11.8           RP     3.8
+## 13 425794  Adam Wainwright     1   Czap auctioned         steamer   3.6           SP     2.6
+## 14 607457 Kyle Barraclough     1   Omar auctioned         steamer   2.9           RP     1.9
+## 15 453178      Ian Kennedy     1 Carter auctioned         steamer   2.8           SP     1.8
+## 16 605169     Carter Capps     1   Czap auctioned         steamer   2.4           RP     1.4
+## 17 458681       Lance Lynn     1   Omar auctioned         steamer   2.0           SP     1.0
+## 18 444468    Hector Rondon     5 Moacir auctioned         steamer   5.9           RP     0.9
+## 19 571704        Ken Giles    17 Carter auctioned         steamer  17.7           RP     0.7
+## 20 628711      Julio Urias     8   Czap auctioned         steamer   8.6           SP     0.6</code></pre>
+<pre class="r"><code>all_surplus &lt;- dplyr::bind_rows(h_surplus, p_surplus)
+
+auction_score &lt;- all_surplus %&gt;%
+  dplyr::filter(!priority_pos == 'C') %&gt;%
+  dplyr::group_by(owner, projection_name, is_keeper) %&gt;%
+  dplyr::summarize(total_surplus = sum(surplus)) %&gt;%
+  dplyr::rename(system = projection_name)
+
+auction_score %&gt;%
+  dplyr::filter(is_keeper == 'keeper') %&gt;%
+  dplyr:::arrange(-total_surplus) %&gt;%
+  print.AsIs()</code></pre>
+<pre><code>##     owner  system is_keeper total_surplus
+## 1  Carter steamer    keeper          88.0
+## 2     ALM steamer    keeper          75.4
+## 3    Eric steamer    keeper          67.3
+## 4  Moacir steamer    keeper          54.8
+## 5     PTB steamer    keeper          54.6
+## 6   Bench steamer    keeper          52.4
+## 7    Saud steamer    keeper          39.8
+## 8   MCard steamer    keeper          33.1
+## 9    Czap steamer    keeper          22.4
+## 10  Mintz steamer    keeper          14.2
+## 11   Whet steamer    keeper           7.2
+## 12   Omar steamer    keeper         -14.3</code></pre>
+<pre class="r"><code>auction_score %&gt;%
+  dplyr::filter(is_keeper == 'auctioned') %&gt;%
+  dplyr:::arrange(-total_surplus) %&gt;%
+  print.AsIs()</code></pre>
+<pre><code>##     owner  system is_keeper total_surplus
+## 1    Omar steamer auctioned          15.3
+## 2    Czap steamer auctioned           5.7
+## 3   Mintz steamer auctioned         -10.3
+## 4     ALM steamer auctioned         -14.9
+## 5   Bench steamer auctioned         -34.9
+## 6  Carter steamer auctioned         -37.1
+## 7     PTB steamer auctioned         -39.4
+## 8    Eric steamer auctioned         -39.8
+## 9    Whet steamer auctioned         -57.5
+## 10   Saud steamer auctioned         -65.6
+## 11  MCard steamer auctioned         -88.2
+## 12 Moacir steamer auctioned        -129.2</code></pre>
+<p>for Omar</p>
+<pre class="r"><code>all_surplus %&gt;%
+  dplyr::filter(is_keeper == 'keeper' &amp; owner == 'Omar') %&gt;%
+  print.AsIs()</code></pre>
+<pre><code>##    mlbid             name price owner is_keeper projection_name value priority_pos surplus
+## 1 502517    Daniel Murphy     4  Omar    keeper         steamer  15.9           2B    11.9
+## 2 608324     Alex Bregman     1  Omar    keeper         steamer   3.8           3B     2.8
+## 3 502671 Paul Goldschmidt    58  Omar    keeper         steamer  38.5           1B   -19.5
+## 4 517593    Danny Salazar     2  Omar    keeper         steamer   4.1           SP     2.1
+## 5 452657       Jon Lester    27  Omar    keeper         steamer  15.4           SP   -11.6</code></pre>
+<pre class="r"><code>all_surplus %&gt;%
+  dplyr::filter(is_keeper == 'auctioned' &amp; owner == 'Omar') %&gt;%
+  dplyr::arrange(-surplus) %&gt;%
+  print.AsIs()</code></pre>
+<pre><code>##     mlbid             name price owner is_keeper projection_name value priority_pos surplus
+## 1  430945       Adam Jones    13  Omar auctioned         steamer  27.3           OF    14.3
+## 2  466320    Melky Cabrera     1  Omar auctioned         steamer  10.0           OF     9.0
+## 3  543063 Brandon Crawford     1  Omar auctioned         steamer   9.3           SS     8.3
+## 4  572070 Garrett Richards     2  Omar auctioned         steamer   7.8           SP     5.8
+## 5  612672     Wei-Yin Chen     1  Omar auctioned         steamer   6.2           SP     5.2
+## 6  608365  Addison Russell     6  Omar auctioned         steamer   9.9           SS     3.9
+## 7  543543      Brad Miller     1  Omar auctioned         steamer   4.4           SS     3.4
+## 8  435522      Neil Walker     1  Omar auctioned         steamer   3.4           2B     2.4
+## 9  607457 Kyle Barraclough     1  Omar auctioned         steamer   2.9           RP     1.9
+## 10 458681       Lance Lynn     1  Omar auctioned         steamer   2.0           SP     1.0
+## 11 453943     Todd Frazier    11  Omar auctioned         steamer  11.2           3B     0.2
+## 12 443558      Nelson Cruz    29  Omar auctioned         steamer  28.7           OF    -0.3
+## 13 545341   Randal Grichuk     1  Omar auctioned         steamer   0.0           OF    -1.0
+## 14 607680     Kevin Pillar     1  Omar auctioned         steamer   0.0           OF    -1.0
+## 15 433586 Santiago Casilla     1  Omar auctioned         steamer   0.0           RP    -1.0
+## 16 605397     Joe Musgrove     1  Omar auctioned         steamer   0.0           SP    -1.0
+## 17 503285     Darren O'Day     2  Omar auctioned         steamer   0.0           RP    -2.0
+## 18 425492      Ryan Madson     4  Omar auctioned         steamer   0.0           RP    -4.0
+## 19 572971   Dallas Keuchel    11  Omar auctioned         steamer   5.7           SP    -5.3
+## 20 456715     Lorenzo Cain    12  Omar auctioned         steamer   2.1           OF    -9.9
+## 21 500779    Jose Quintana    19  Omar auctioned         steamer   4.4           SP   -14.6
+## 22 457763     Buster Posey    31  Omar auctioned         steamer   1.1            C   -29.9</code></pre>
+<p>for Cza</p>
+<pre class="r"><code>all_surplus %&gt;%
+  dplyr::filter(is_keeper == 'keeper' &amp; owner == 'Czap') %&gt;%
+  print.AsIs()</code></pre>
+<pre><code>##    mlbid              name price owner is_keeper projection_name value priority_pos surplus
+## 1 572041      A.J. Pollock     2  Czap    keeper         steamer  16.6           OF    14.6
+## 2 593428   Xander Bogaerts    22  Czap    keeper         steamer  32.1           SS    10.1
+## 3 643217 Andrew Benintendi     1  Czap    keeper         steamer   7.7           OF     6.7
+## 4 605141      Mookie Betts    56  Czap    keeper         steamer  62.3           OF     6.3
+## 5 518626    Josh Donaldson    49  Czap    keeper         steamer  33.7           3B   -15.3</code></pre>
+<pre class="r"><code>all_surplus %&gt;%
+  dplyr::filter(is_keeper == 'auctioned' &amp; owner == 'Czap') %&gt;%
+  dplyr::arrange(-surplus) %&gt;%
+  print.AsIs()</code></pre>
+<pre><code>##     mlbid                 name price owner is_keeper projection_name value priority_pos surplus
+## 1  453192        Andrew Miller    15  Czap auctioned         steamer  31.6           RP    16.6
+## 2  435622          Ian Desmond    10  Czap auctioned         steamer  19.6           SS     9.6
+## 3  476454      Dellin Betances    15  Czap auctioned         steamer  19.5           RP     4.5
+## 4  425794      Adam Wainwright     1  Czap auctioned         steamer   3.6           SP     2.6
+## 5  572821         Brian Dozier    27  Czap auctioned         steamer  29.1           2B     2.1
+## 6  605169         Carter Capps     1  Czap auctioned         steamer   2.4           RP     1.4
+## 7  628711          Julio Urias     8  Czap auctioned         steamer   8.6           SP     0.6
+## 8  592254         Jose De Leon     1  Czap auctioned         steamer   1.3           SP     0.3
+## 9  502381       Luke Gregerson     1  Czap auctioned         steamer   0.3           RP    -0.7
+## 10 425877        Yadier Molina     1  Czap auctioned         steamer   0.0            C    -1.0
+## 11 474892         Chris Carter     1  Czap auctioned         steamer   0.0           1B    -1.0
+## 12 622534        Manuel Margot     1  Czap auctioned         steamer   0.0           OF    -1.0
+## 13 518553         Steve Cishek     1  Czap auctioned         steamer   0.0           RP    -1.0
+## 14 593958    Eduardo Rodriguez     1  Czap auctioned         steamer   0.0           SP    -1.0
+## 15 596133          Luke Weaver     1  Czap auctioned         steamer   0.0           SP    -1.0
+## 16 606965       Chris Devenski     1  Czap auctioned         steamer   0.0           SP    -1.0
+## 17 621244         Jose Berrios     1  Czap auctioned         steamer   0.0           SP    -1.0
+## 18 606965 Christopher Devenski     1  Czap auctioned         steamer   0.0           SP    -1.0
+## 19 453265          Tony Watson     9  Czap auctioned         steamer   5.6           RP    -3.4
+## 20 593576         Hector Neris     4  Czap auctioned         steamer   0.0           RP    -4.0
+## 21 592102           Cody Allen    14  Czap auctioned         steamer   9.1           RP    -4.9
+## 22 408061  Francisco Rodriguez    11  Czap auctioned         steamer   0.0           RP   -11.0</code></pre>
+<p>ALM</p>
+<pre class="r"><code>all_surplus %&gt;%
+  dplyr::filter(is_keeper == 'keeper' &amp; owner == 'ALM') %&gt;%
+  print.AsIs()</code></pre>
+<pre><code>##    mlbid               name price owner is_keeper projection_name value priority_pos surplus
+## 1 594809         Adam Eaton     3   ALM    keeper         steamer  25.1           OF    22.1
+## 2 519058     Mike Moustakas     1   ALM    keeper         steamer  21.0           3B    20.0
+## 3 594777       Kole Calhoun     4   ALM    keeper         steamer  19.7           OF    15.7
+## 4 572039   Stephen Piscotty     1   ALM    keeper         steamer  14.9           OF    13.9
+## 5 598265 Jackie Bradley Jr.     1   ALM    keeper         steamer   4.7           OF     3.7</code></pre>
+<pre class="r"><code>all_surplus %&gt;%
+  dplyr::filter(is_keeper == 'auctioned' &amp; owner == 'ALM') %&gt;%
+  dplyr::arrange(-surplus) %&gt;%
+  print.AsIs()</code></pre>
+<pre><code>##     mlbid              name price owner is_keeper projection_name value priority_pos surplus
+## 1  571830      Tommy Joseph     1   ALM auctioned         steamer  13.7           1B    12.7
+## 2  408236   Adrian Gonzalez     4   ALM auctioned         steamer  14.8           1B    10.8
+## 3  547973   Aroldis Chapman    24   ALM auctioned         steamer  32.5           RP     8.5
+## 4  516770    Starlin Castro     2   ALM auctioned         steamer   9.6           SS     7.6
+## 5  553993    Eugenio Suarez     2   ALM auctioned         steamer   6.3           SS     4.3
+## 6  542303     Marcell Ozuna     1   ALM auctioned         steamer   4.9           OF     3.9
+## 7  592206  Nick Castellanos     1   ALM auctioned         steamer   3.9           3B     2.9
+## 8  407793       John Lackey     9   ALM auctioned         steamer   8.9           SP    -0.1
+## 9  453343     Mark Melancon    19   ALM auctioned         steamer  18.5           RP    -0.5
+## 10 446263        Lucas Duda     1   ALM auctioned         steamer   0.0           1B    -1.0
+## 11 628356      Jung Ho Kang     1   ALM auctioned         steamer   0.0           SS    -1.0
+## 12 434538 Francisco Liriano     1   ALM auctioned         steamer   0.0           SP    -1.0
+## 13 462136     Marco Estrada     1   ALM auctioned         steamer   0.0           SP    -1.0
+## 14 573186    Marcus Stroman     8   ALM auctioned         steamer   6.8           SP    -1.2
+## 15 521692    Salvador Perez     2   ALM auctioned         steamer   0.0            C    -2.0
+## 16 493200     Seung Hwan Oh    19   ALM auctioned         steamer  16.1           RP    -2.9
+## 17 592767        Drew Smyly     3   ALM auctioned         steamer   0.0           SP    -3.0
+## 18 543829        Dee Gordon    25   ALM auctioned         steamer  20.5           2B    -4.5
+## 19 448801       Chris Davis    23   ALM auctioned         steamer  17.4           1B    -5.6
+## 20 596019  Francisco Lindor    40   ALM auctioned         steamer  34.0           SS    -6.0
+## 21 502042      Chris Archer    32   ALM auctioned         steamer  14.3           SP   -17.7
+## 22 453562      Jake Arrieta    28   ALM auctioned         steamer   7.9           SP   -20.1</code></pre>
+<p>Mo??</p>
+<pre class="r"><code>all_surplus %&gt;%
+  dplyr::filter(is_keeper == 'keeper' &amp; owner == 'Moacir') %&gt;%
+  print.AsIs()</code></pre>
+<pre><code>##    mlbid              name price  owner is_keeper projection_name value priority_pos surplus
+## 1 516416       Jean Segura     1 Moacir    keeper         steamer  23.8           SS    22.8
+## 2 595281   Kevin Kiermaier     1 Moacir    keeper         steamer  13.6           OF    12.6
+## 3 592826 Vincent Velasquez     1 Moacir    keeper         steamer   7.1           SP     6.1
+## 4 592826   Vince Velasquez     1 Moacir    keeper         steamer   7.1           SP     6.1
+## 5 533167    Matt Shoemaker     1 Moacir    keeper         steamer   5.4           SP     4.4
+## 6 543294    Kyle Hendricks     1 Moacir    keeper         steamer   3.8           SP     2.8</code></pre>
+<pre class="r"><code>all_surplus %&gt;%
+  dplyr::filter(is_keeper == 'auctioned' &amp; owner == 'Moacir') %&gt;%
+  dplyr::arrange(-surplus) %&gt;%
+  print.AsIs()</code></pre>
+<pre><code>##     mlbid             name price  owner is_keeper projection_name value priority_pos surplus
+## 1  596748    Maikel Franco     3 Moacir auctioned         steamer   8.5           3B     5.5
+## 2  425783    Shin-Soo Choo     2 Moacir auctioned         steamer   5.0           OF     3.0
+## 3  444468    Hector Rondon     5 Moacir auctioned         steamer   5.9           RP     0.9
+## 4  457918        J.A. Happ     2 Moacir auctioned         steamer   2.2           SP     0.2
+## 5  502188  Jeff Samardzija     2 Moacir auctioned         steamer   1.3           SP    -0.7
+## 6  545332     Jake Barrett     1 Moacir auctioned         steamer   0.0           RP    -1.0
+## 7  405395    Albert Pujols     5 Moacir auctioned         steamer   2.7           1B    -2.3
+## 8  592662       Robbie Ray     7 Moacir auctioned         steamer   4.4           SP    -2.6
+## 9  450314      Ben Zobrist    13 Moacir auctioned         steamer   9.8           2B    -3.2
+## 10 592717    Aaron Sanchez     7 Moacir auctioned         steamer   3.6           SP    -3.4
+## 11 431145   Russell Martin     4 Moacir auctioned         steamer   0.0            C    -4.0
+## 12 491646    Jeanmar Gomez     5 Moacir auctioned         steamer   0.0           RP    -5.0
+## 13 407845  Fernando Rodney     6 Moacir auctioned         steamer   0.0           RP    -6.0
+## 14 488726 Michael Brantley     9 Moacir auctioned         steamer   0.0           OF    -9.0
+## 15 532077    Roberto Osuna    22 Moacir auctioned         steamer  12.6           RP    -9.4
+## 16 519144    Rick Porcello    13 Moacir auctioned         steamer   3.0           SP   -10.0
+## 17 456034      David Price    20 Moacir auctioned         steamer   3.7           SP   -16.3
+## 18 519242       Chris Sale    37 Moacir auctioned         steamer  18.9           SP   -18.1
+## 19 518960  Jonathan Lucroy    23 Moacir auctioned         steamer   0.0            C   -23.0
+## 20 430832    Jose Bautista    32 Moacir auctioned         steamer   8.2           OF   -23.8
+## 21 477132  Clayton Kershaw    67 Moacir auctioned         steamer  39.0           SP   -28.0</code></pre>
+<pre class="r"><code>active_pp$h_final %&gt;% dplyr::filter(firstname == 'Buster') %&gt;% print.AsIs()</code></pre>
+<pre><code>##    mlbid     fullname firstname lastname position priority_pos projection_name  ab  r rbi sb  tb
+## 1 457763 Buster Posey    Buster    Posey        C            C         steamer 482 66  71  3 225
+##    obp   r_zscore rbi_zscore  sb_zscore tb_zscore obp_zscore unadjusted_zsum replacement_pos
+## 1 0.37 -0.1603873  0.2669589 -0.7416737 0.1676904  0.4824895      0.01507784               C
+##   adjustment_zscore final_zsum value hit_pitch
+## 1          9.219912 0.01507784   1.1         h</code></pre>
+<pre class="r"><code>active_pp$h_final %&gt;% dplyr::filter(fullname == 'Adam Jones') %&gt;% print.AsIs()</code></pre>
+<pre><code>##    mlbid   fullname firstname lastname position priority_pos projection_name  ab  r rbi sb  tb
+## 1 430945 Adam Jones      Adam    Jones       OF           OF         steamer 585 82  84  3 271
+##     obp r_zscore rbi_zscore  sb_zscore tb_zscore obp_zscore unadjusted_zsum replacement_pos
+## 1 0.312 1.115622   1.148036 -0.7416737  1.511811  0.6655048          3.6993              OF
+##   adjustment_zscore final_zsum value hit_pitch
+## 1         0.6892758   4.388576  27.3         h</code></pre>
+<pre class="r"><code>active_pp$h_final %&gt;% dplyr::filter(fullname == 'Mike Trout') %&gt;% print.AsIs()</code></pre>
+<pre><code>##    mlbid   fullname firstname lastname position priority_pos projection_name  ab   r rbi sb  tb
+## 1 545361 Mike Trout      Mike    Trout       OF           OF         steamer 526 102 100 19 298
+##     obp r_zscore rbi_zscore sb_zscore tb_zscore obp_zscore unadjusted_zsum replacement_pos
+## 1 0.419 2.710633   2.232439 0.9753844  2.300751   2.323763        10.54297              OF
+##   adjustment_zscore final_zsum value hit_pitch
+## 1         0.6892758   11.23225  68.3         h</code></pre>
 </div>
 
 
