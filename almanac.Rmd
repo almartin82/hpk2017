@@ -1,0 +1,96 @@
+---
+title: "almanac"
+author: "Andrew Martin"
+date: "April 4, 2017"
+output: html_document
+---
+
+
+```{r message = FALSE, warning = FALSE, error = FALSE}
+
+library(readr)
+library(tidyverse)
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
+```
+
+## Get data
+
+```{r cache = FALSE, message = FALSE, warning = FALSE}
+
+hpk_hist <- readr::read_csv(file = "http://hpk.s3-website-us-east-1.amazonaws.com/hpk_historic_thru_2016.csv") %>% unique()
+
+```
+
+```{r message = FALSE, warning = FALSE}
+
+hpk_2017 <- readr::read_csv('https://s3.amazonaws.com/hpk/hpk_2017.csv') %>% unique()
+
+```
+
+## Records
+
+### R
+```{r}
+
+czap_disp <- . %>%
+  unique()%>%  
+  dplyr::arrange(desc(value)) %>%
+  select(date, value, manager, team_name, stat_name) %>%
+  head(10) %>%
+  print.AsIs()
+
+hpk_hist %>% dplyr::filter(stat_name == 'R') %>% czap_disp()
+
+```
+
+
+### RBI
+```{r}
+
+hpk_hist %>% dplyr::filter(stat_name == 'RBI') %>% czap_disp()
+
+```
+
+
+### SB
+```{r}
+
+hpk_hist %>% dplyr::filter(stat_name == 'SB') %>% czap_disp()
+
+```
+
+
+### TB
+```{r}
+
+hpk_hist %>% dplyr::filter(stat_name == 'TB') %>% czap_disp()
+
+```
+
+
+
+### OBP (min 15 AB)
+```{r}
+
+valid <- hpk_hist %>% unique() %>% 
+  dplyr::filter(stat_name == 'AB' & value > 14) %>%
+  dplyr::rename(AB = value)
+
+valid %>%
+  dplyr::left_join(
+    hpk_hist %>% dplyr::filter(stat_name == 'OBP') %>%
+      unique() %>%
+      dplyr::select(date, team_key, value) %>%
+      dplyr::rename(OBP = value),
+    by = c('date', 'team_key')
+  ) %>%
+  dplyr::arrange(desc(OBP)) %>%
+  select(date, manager, team_name, AB, OBP) %>%
+  head(10) %>%
+  print.AsIs()
+
+```
