@@ -1,0 +1,215 @@
+---
+title: "sgp"
+author: "Andrew Martin"
+date: "April 8, 2017"
+output: html_document
+params:
+  target_owner: 'alm'
+
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(broom)
+library(prophet)
+library(ggplot2)
+```
+
+```{r message = FALSE, warning = FALSE, error = FALSE}
+
+knitr::knit('data_prep.Rmd', tangle = TRUE)
+source('data_prep.R')
+
+```
+
+## SGP regression
+
+```{r}
+h_stat_totals <- h_points(hpk_2017_clean)
+h_stat_totals <- tag_owner(h_stat_totals, short_names)
+
+p_stat_totals <- p_points(hpk_2017_clean)
+p_stat_totals <- tag_owner(p_stat_totals, short_names)
+
+hpk_stat_totals <- bind_rows(h_stat_totals, p_stat_totals)
+hpk_stats <- unique(hpk_stat_totals$stat_name)
+
+
+
+for (i in hpk_stats) {
+  
+  this_stat <- hpk_stat_totals %>% dplyr::filter(stat_name == i)
+  
+  p <- ggplot(
+    data = this_stat,
+    aes(
+      x = rank,
+      y = total_value,
+      label = owner
+    )
+  ) +
+  stat_smooth(method = 'lm', color = 'red', se = FALSE) +
+  geom_text() +
+  geom_point(shape = '+') +
+  labs(title = i)
+  
+  print(p)
+  
+}
+
+```
+
+```{r}
+
+
+hpk_models = hpk_stat_totals %>% 
+  dplyr::group_by(stat_name) %>%
+  do(stat_slope = lm(total_value ~ rank, data = .))
+
+# get the coefficients by group in a tidy data_frame
+hpk_models_tidy = tidy(hpk_models, stat_slope)
+hpk_models_tidy %>%
+  dplyr::filter(term == 'rank') %>%
+  dplyr::select(stat_name, term, estimate, std.error) %>%
+  knitr::kable()
+
+```
+
+
+## team/position regression
+
+
+```{r}
+position_replacement_df <- hpk_starting_rosters %>%
+  dplyr::mutate(team_key = paste0(team_key, 'zz', played)) %>%
+  stat_metadata() 
+
+
+h_pos_stat_totals <- h_points(position_replacement_df)
+#split out position
+h_pos_stat_totals <- h_pos_stat_totals %>%
+  tidyr::separate(col = team_key, into = c('team_key', 'played'), sep = 'zz')
+h_pos_stat_totals <- tag_owner(h_pos_stat_totals, short_names)
+#redo rank
+h_pos_stat_totals <- h_pos_stat_totals %>%
+  dplyr::group_by(played, stat_name) %>%
+  dplyr::mutate(
+    rank = rank(total_value)
+  )
+
+p_pos_stat_totals <- p_points(position_replacement_df)
+#split out position
+p_pos_stat_totals <- p_pos_stat_totals %>%
+  tidyr::separate(col = team_key, into = c('team_key', 'played'), sep = 'zz')
+p_pos_stat_totals <- tag_owner(p_pos_stat_totals, short_names)
+#redo rank
+p_pos_stat_totals <- p_pos_stat_totals %>%
+  dplyr::group_by(played, stat_name) %>%
+  dplyr::mutate(
+    rank = rank(total_value)
+  )
+
+hpk_pos_stat_totals <- bind_rows(h_pos_stat_totals, p_pos_stat_totals)
+hpk_played_pos <- unique(hpk_pos_stat_totals$played)
+
+```
+`
+
+```{r}
+
+for(i in hpk_played_pos) {
+  
+  for (j in hpk_stats) {
+  
+    this_stat <- hpk_pos_stat_totals %>% dplyr::filter(played == i & stat_name == j)
+    
+    p <- ggplot(
+      data = this_stat,
+      aes(
+        x = rank,
+        y = total_value,
+        label = owner
+      )
+    ) +
+    stat_smooth(method = 'lm', color = 'red', se = FALSE) +
+    geom_text() +
+    geom_point(shape = '+') +
+    labs(title = paste0('Pos: ', i, ' Stat: ', j))
+    
+    print(p)
+    
+  }
+}
+
+```
+
+```{r eval = FALSE}
+
+
+hpk_pos_models = hpk_pos_stat_totals %>% 
+  dplyr::group_by(played, stat_name) %>%
+  do(stat_slope = lm(total_value ~ rank, data = .))
+
+# get the coefficients by group in a tidy data_frame
+hpk_models_pos_tidy = tidy(hpk_pos_models, stat_slope)
+
+# get value at X = 1
+hpk_pos_intercept <- hpk_models_pos_tidy %>%
+  dplyr::filter(term == '(Intercept)') %>%
+  dplyr::select(played, stat_name, estimate) %>%
+  dplyr::rename(
+    intercept = estimate
+  )
+
+hpk_pos_slope <- hpk_models_pos_tidy %>%
+  dplyr::filter(term == 'rank') %>%
+  dplyr::select(played, stat_name, estimate) %>%
+  dplyr::rename(
+    slope = estimate
+  )
+
+hpk_pos_replacement <- hpk_pos_intercept %>%
+  dplyr::left_join(
+    hpk_pos_slope, by = c('played', 'stat_name')
+  ) %>%
+  dplyr::mutate(
+    replacement = (slope * 1) + intercept
+  )
+
+```
+
+## prophet stuff
+
+```{r}
+
+forecast_stats <- c('AB', 'R', 'RBI', 'SB', 'OB', 'W', 'SV', 'K', 'Runs Allowed', 'WH Allowed')
+
+for (i in forecast_stats) {
+  
+  this_stat <- hpk_2017_clean_cumulative %>% 
+    dplyr::filter(stat_name == i) %>%
+    dplyr::mutate(target_owner = ifelse(owner == params$target_owner, TRUE, FALSE))
+
+  p <- ggplot(
+    data = this_stat,
+    aes(
+      x = date,
+      y = cumulative_value,
+      group = owner,
+      label = cumulative_value,
+      color = target_owner
+    )
+  ) +
+  geom_text() +
+  geom_line() + 
+  scale_color_manual(values = c('gray20', 'red')) +
+  labs(title = i) 
+  
+  print(p)
+}
+
+```
