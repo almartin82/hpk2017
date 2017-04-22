@@ -54,9 +54,9 @@ clean_rows <- function(df) {
 
 clean_values <- function(df) {
   
-  hpk1 <- df %>% dplyr::filter(!stat_id == 60 | is.na(stat_id))
+  hpk1 <- df %>% dplyr::filter(!stat_name == 'AVG' | is.na(stat_name))
   
-  hpk2 <- df %>% dplyr::filter(stat_id == 60) 
+  hpk2 <- df %>% dplyr::filter(stat_name == 'AVG') 
   
   avg <- hpk2 %>%
     dplyr::rowwise() %>%
@@ -251,8 +251,9 @@ clean_obp <- function(df) {
 hpk_2017 <- hpk_2017 %>%
   dplyr::left_join(short_names)
 
+
+## ------------------------------------------------------------------------
 hpk_2017_clean <- hpk_2017 %>%
-  dplyr::select(-stat_id_1) %>%
   clean_rows %>%
   true_era_whip %>%
   clean_values %>%

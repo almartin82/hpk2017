@@ -65,7 +65,6 @@ for (i in hpk_stats) {
 
 ```{r}
 
-
 hpk_models = hpk_stat_totals %>% 
   dplyr::group_by(stat_name) %>%
   do(stat_slope = lm(total_value ~ rank, data = .))
@@ -84,6 +83,7 @@ hpk_models_tidy %>%
 
 
 ```{r}
+
 position_replacement_df <- hpk_starting_rosters %>%
   dplyr::mutate(team_key = paste0(team_key, 'zz', played)) %>%
   stat_metadata() 
@@ -151,6 +151,7 @@ for(i in hpk_played_pos) {
 
 
 hpk_pos_models = hpk_pos_stat_totals %>% 
+  dplyr::filter(stat_name %in% c('R', 'RBI', 'SB', 'TB')) %>%
   dplyr::group_by(played, stat_name) %>%
   do(stat_slope = lm(total_value ~ rank, data = .))
 
@@ -182,11 +183,26 @@ hpk_pos_replacement <- hpk_pos_intercept %>%
 
 ```
 
-## prophet stuff
+## score players
 
 ```{r}
 
-forecast_stats <- c('AB', 'R', 'RBI', 'SB', 'OB', 'W', 'SV', 'K', 'Runs Allowed', 'WH Allowed')
+
+```
+
+
+
+
+
+
+
+
+
+## prophet stuff
+
+```{r eval=FALSE}
+
+forecast_stats <- c('AB', 'R', 'RBI', 'SB', 'OB', 'W', 'SV', 'K', 'Earned Runs Allowed', 'WH Allowed')
 
 for (i in forecast_stats) {
   
@@ -210,6 +226,49 @@ for (i in forecast_stats) {
   labs(title = i) 
   
   print(p)
+}
+
+```
+
+
+
+
+
+```{r eval = FALSE}
+
+forecast_stats <- c('AB', 'R', 'RBI', 'SB', 'OB')
+
+plot_list <- list()
+
+
+for (i in forecast_stats) {
+  
+  print(i)
+  
+  this_stat <- hpk_2017_clean_cumulative %>% 
+    dplyr::filter(stat_name == i) %>%
+    dplyr::mutate(target_owner = ifelse(owner == params$target_owner, TRUE, FALSE)) %>%
+    #prophet prep
+    dplyr::rename(
+      ds = date,
+      y = cumulative_value
+    )
+
+  for (j in unique(this_stat$owner)) {
+    
+    this_team <- this_stat %>% dplyr::filter(owner == j)
+    #make prophet
+    team_stat_prophet <- prophet(this_team)
+    
+    future <- make_future_dataframe(team_stat_prophet, periods = 10)
+    forecast <- predict(team_stat_prophet, future)
+    
+    p <- plot(team_stat_prophet, forecast, uncertainty = TRUE) +
+      labs(title = paste0('Stat: ', i, ' Team: ', j))
+
+    print(p)
+
+  }
 }
 
 ```
